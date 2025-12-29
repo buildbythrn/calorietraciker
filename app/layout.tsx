@@ -1,0 +1,40 @@
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { AuthProvider } from '@/lib/auth'
+import PWAInstallPrompt from '@/components/PWAInstallPrompt'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'Calorie Tracker',
+  description: 'Track your calories, habits, and workouts',
+  manifest: '/manifest.json',
+  themeColor: '#22c55e',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Calorie Tracker',
+  },
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <head>
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+      </head>
+      <body className={inter.className}>
+        <AuthProvider>
+          {children}
+          <PWAInstallPrompt />
+        </AuthProvider>
+      </body>
+    </html>
+  )
+}
