@@ -1075,7 +1075,7 @@ export default function WorkoutsPage() {
                   type="button"
                   onClick={() => {
                     setShowAddForm(false);
-                    setFormData({ name: '', type: 'cardio', duration: '', caloriesBurned: '', weight: '', sets: '', reps: '', selectedDates: [] });
+                    setFormData({ name: '', type: 'cardio', duration: '', caloriesBurned: '', weight: '', sets: '', reps: '', routine: '', selectedDates: [] });
                     setSelectedExercise(null);
                   }}
                   className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
