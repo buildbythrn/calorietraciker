@@ -65,7 +65,7 @@ export default function HabitsPage() {
   };
 
   const loadHabitEntries = async () => {
-    if (!user) return;
+    if (!user || habits.length === 0) return;
     try {
       const entriesMap: Record<string, HabitEntry[]> = {};
       const streaksMap: Record<string, Streak> = {};
@@ -118,10 +118,12 @@ export default function HabitsPage() {
     if (!user) return;
     try {
       await toggleHabitEntry(habitId, user.id, selectedDate);
-      loadHabitEntries();
+      // Reload entries to reflect the change
+      await loadHabitEntries();
     } catch (error) {
       console.error('Error toggling habit entry:', error);
-      alert('Failed to update habit');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Failed to update habit: ${errorMessage}`);
     }
   };
 
@@ -139,17 +141,17 @@ export default function HabitsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Habit Tracker</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Habit Tracker</h1>
           </div>
         </div>
       </header>
@@ -157,14 +159,14 @@ export default function HabitsPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Select Date
             </label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             />
           </div>
           <button
@@ -268,7 +270,7 @@ export default function HabitsPage() {
               return (
                 <div
                   key={habit.id}
-                  className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-4 flex-1">
@@ -280,9 +282,9 @@ export default function HabitsPage() {
                         )}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold mb-1">{habit.name}</h3>
+                        <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-white">{habit.name}</h3>
                         {habit.description && (
-                          <p className="text-sm text-gray-600">{habit.description}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{habit.description}</p>
                         )}
                       </div>
                     </div>
@@ -299,13 +301,13 @@ export default function HabitsPage() {
                       <div className="flex items-center gap-2">
                         <Flame className="text-orange-500" size={20} />
                         <div>
-                          <p className="text-xs text-gray-600">Current Streak</p>
-                          <p className="font-bold text-lg">{streak.current} days</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Current Streak</p>
+                          <p className="font-bold text-lg text-gray-900 dark:text-white">{streak.current} days</p>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Longest Streak</p>
-                        <p className="font-bold text-lg">{streak.longest} days</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Longest Streak</p>
+                        <p className="font-bold text-lg text-gray-900 dark:text-white">{streak.longest} days</p>
                       </div>
                     </div>
                     <button

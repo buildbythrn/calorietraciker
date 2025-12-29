@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,6 +37,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-6"
+        >
+          <ArrowLeft size={18} />
+          <span className="text-sm">Back to Home</span>
+        </Link>
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary-600 mb-2">Calorie Tracker</h1>
           <p className="text-gray-600">Track your health journey</p>

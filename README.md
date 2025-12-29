@@ -10,6 +10,7 @@ A comprehensive health and fitness tracking application that allows users to:
 
 - 🔐 User authentication with Firebase
 - 📊 Daily calorie tracking with meal categorization
+- 🔍 **Automatic calorie lookup** - Search food database to auto-fill calories
 - ✅ Habit tracking with streak calculation
 - 💪 Workout tracking with streak calculation
 - 📱 Progressive Web App (PWA) support for mobile installation
@@ -94,7 +95,12 @@ npm run dev
 
 ### Workout Tracking
 - Navigate to "Workouts" from the dashboard
+- **Search exercises** - Auto-complete exercise names with calorie estimates
+- **Automatic calorie calculation** - Calories auto-calculate based on exercise and duration
 - Log workouts with type, duration, and calories burned
+- **Optional fields for strength training:**
+  - Weight (kg) - for dumbbells, resistance bands, etc.
+  - Sets and Reps - for tracking strength training volume
 - View workout streak on the main page
 - Track workouts across different dates
 

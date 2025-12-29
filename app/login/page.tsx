@@ -3,9 +3,9 @@
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import WelcomePage from '@/components/WelcomePage';
+import LoginPage from '@/components/LoginPage';
 
-export default function Home() {
+export default function LoginRoute() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -27,6 +27,6 @@ export default function Home() {
     return null;
   }
 
-  return <WelcomePage />;
+  return <LoginPage />;
 }
 

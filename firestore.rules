@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function to check if user owns the resource being created
+    function isCreatingOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Calorie Entries
+    match /calorieEntries/{entryId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Habits
+    match /habits/{habitId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Habit Entries
+    match /habitEntries/{entryId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Workouts
+    match /workouts/{workoutId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Goals
+    match /goals/{goalId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Weight Entries
+    match /weightEntries/{entryId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Water Entries
+    match /waterEntries/{entryId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Body Measurements
+    match /bodyMeasurements/{measurementId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // User Settings
+    // Note: settingsId is the userId itself
+    match /userSettings/{settingsId} {
+      // Allow read if authenticated and the document ID matches the user's ID
+      allow read: if isAuthenticated() && request.auth.uid == settingsId;
+      // Allow create if authenticated and the document ID matches the user's ID
+      allow create: if isAuthenticated() && request.auth.uid == settingsId && request.auth.uid == request.resource.data.userId;
+      // Allow update if authenticated and the document ID matches the user's ID
+      allow update: if isAuthenticated() && request.auth.uid == settingsId && request.auth.uid == request.resource.data.userId;
+      // Allow delete if authenticated and the document ID matches the user's ID
+      allow delete: if isAuthenticated() && request.auth.uid == settingsId;
+    }
+    
+    // Meal Plans
+    match /mealPlans/{planId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Workout Plans
+    match /workoutPlans/{planId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+    
+    // Achievements
+    match /achievements/{achievementId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+  }
+}
+

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/lib/auth'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import LayoutWrapper from '@/components/LayoutWrapper'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -31,8 +33,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          {children}
-          <PWAInstallPrompt />
+          <ThemeProvider>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+            <PWAInstallPrompt />
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

@@ -75,29 +75,60 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id_here
 4. Select a location for your database (choose the closest to your users)
 5. Click **"Enable"**
 
-### Optional: Set Up Basic Security Rules (Recommended for Production)
+### ⚠️ REQUIRED: Set Up Security Rules
+
+**IMPORTANT:** You must set up security rules or you'll get "Missing or insufficient permissions" errors when trying to update habits or other data.
 
 1. In Firestore, go to the **"Rules"** tab
-2. Replace the rules with:
+2. Copy the contents of the `firestore.rules` file from your project root
+3. Paste the rules into the Firebase Console Rules editor
+4. Click **"Publish"**
+
+**Note:** The `firestore.rules` file includes security rules for **ALL features** in the app:
+- Calorie tracking (calorieEntries)
+- Habits (habits, habitEntries)
+- Workouts (workouts)
+- Goals (goals)
+- Weight tracking (weightEntries)
+- Water tracking (waterEntries)
+- Body measurements (bodyMeasurements)
+- User settings (userSettings)
+- Meal planning (mealPlans)
+- Workout plans (workoutPlans)
+- Achievements (achievements)
+
+**Quick Fix:** If you don't have the `firestore.rules` file, copy the complete rules from the file (it includes all collections). For a minimal setup, you can start with these essential rules:
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only access their own data
-    match /{collection}/{document} {
-      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    function isAuthenticated() {
+      return request.auth != null;
     }
     
-    // Allow users to create new documents
-    match /{collection}/{document} {
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isCreatingOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Add rules for each collection following this pattern:
+    match /{collection}/{documentId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isCreatingOwner(request.resource.data.userId);
+      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
   }
 }
 ```
 
-3. Click **"Publish"**
+**However, it's strongly recommended to use the complete `firestore.rules` file which has explicit rules for each collection.**
+
+**See `FIRESTORE_RULES_SETUP.md` for detailed instructions and troubleshooting.**
 
 ## Step 7: Test Your Setup
 
