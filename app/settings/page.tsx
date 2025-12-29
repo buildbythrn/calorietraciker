@@ -27,11 +27,11 @@ export default function SettingsPage() {
     exercises: [] as Array<{
       name: string;
       type: 'cardio' | 'strength' | 'flexibility' | 'other';
-      duration?: number;
-      caloriesBurned?: number;
-      weight?: number;
-      sets?: number;
-      reps?: number;
+      duration?: number | string;
+      caloriesBurned?: number | string;
+      weight?: number | string;
+      sets?: number | string;
+      reps?: number | string;
       exercise?: Exercise | null;
     }>,
   });
@@ -496,11 +496,12 @@ export default function SettingsPage() {
                             {
                               name: currentExercise.name,
                               type: currentExercise.type,
-                              duration: currentExercise.duration ? parseInt(currentExercise.duration) : undefined,
-                              caloriesBurned: currentExercise.caloriesBurned ? parseInt(currentExercise.caloriesBurned) : undefined,
-                              weight: currentExercise.weight ? parseFloat(currentExercise.weight) : undefined,
-                              sets: currentExercise.sets ? parseInt(currentExercise.sets) : undefined,
-                              reps: currentExercise.reps ? parseInt(currentExercise.reps) : undefined,
+                              duration: currentExercise.duration || undefined,
+                              caloriesBurned: currentExercise.caloriesBurned || undefined,
+                              weight: currentExercise.weight || undefined,
+                              sets: currentExercise.sets || undefined,
+                              reps: currentExercise.reps || undefined,
+                              exercise: currentExercise.exercise,
                             },
                           ],
                         });
@@ -543,10 +544,26 @@ export default function SettingsPage() {
                         return;
                       }
                       const routines = settings?.workoutRoutines || [];
+                      // Convert form data (strings) to WorkoutRoutine format (numbers)
+                      const exercises: WorkoutRoutine['exercises'] = routineFormData.exercises.map(ex => ({
+                        name: ex.name,
+                        type: ex.type,
+                        duration: typeof ex.duration === 'string' ? (ex.duration ? parseInt(ex.duration) : undefined) : ex.duration,
+                        caloriesBurned: typeof ex.caloriesBurned === 'string' ? (ex.caloriesBurned ? parseInt(ex.caloriesBurned) : undefined) : ex.caloriesBurned,
+                        weight: typeof ex.weight === 'string' ? (ex.weight ? parseFloat(ex.weight) : undefined) : ex.weight,
+                        sets: typeof ex.sets === 'string' ? (ex.sets ? parseInt(ex.sets) : undefined) : ex.sets,
+                        reps: typeof ex.reps === 'string' ? (ex.reps ? parseInt(ex.reps) : undefined) : ex.reps,
+                      }));
+                      
                       if (editingRoutine) {
                         const updated = routines.map(r =>
                           r.id === editingRoutine.id
-                            ? { ...routineFormData, id: editingRoutine.id, createdAt: editingRoutine.createdAt }
+                            ? { 
+                                id: editingRoutine.id, 
+                                name: routineFormData.name,
+                                exercises,
+                                createdAt: editingRoutine.createdAt 
+                              }
                             : r
                         );
                         await updateUserSettings(user.id, { workoutRoutines: updated });
@@ -554,7 +571,7 @@ export default function SettingsPage() {
                         const newRoutine: WorkoutRoutine = {
                           id: Date.now().toString(),
                           name: routineFormData.name,
-                          exercises: routineFormData.exercises,
+                          exercises,
                           createdAt: new Date(),
                         };
                         await updateUserSettings(user.id, { workoutRoutines: [...routines, newRoutine] });
