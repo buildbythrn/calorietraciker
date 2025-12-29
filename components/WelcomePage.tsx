@@ -60,7 +60,7 @@ export default function WelcomePage() {
             <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
               <Calendar className="text-white" size={24} />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Calorie Tracker</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FitFlow</h1>
           </div>
           <button
             onClick={() => router.push('/login')}
@@ -228,7 +228,7 @@ export default function WelcomePage() {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Why Choose Calorie Tracker?
+                Why Choose FitFlow?
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -279,7 +279,7 @@ export default function WelcomePage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 py-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2025 Calorie Tracker</p>
+          <p>&copy; 2025 FitFlow</p>
         </div>
       </footer>
     </div>

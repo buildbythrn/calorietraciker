@@ -108,7 +108,7 @@ export default function CaloriesPage() {
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Calorie Tracker</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FitFlow</h1>
           </div>
         </div>
       </header>

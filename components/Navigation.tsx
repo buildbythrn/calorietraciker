@@ -43,7 +43,7 @@ export default function Navigation() {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex-col z-50">
         <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Calorie Tracker</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">FitFlow</h2>
         </div>
         <nav className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-2">

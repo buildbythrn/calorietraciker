@@ -45,7 +45,7 @@ export default function LoginPage() {
           <span className="text-sm">Back to Home</span>
         </Link>
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">Calorie Tracker</h1>
+          <h1 className="text-4xl font-bold text-primary-600 mb-2">FitFlow</h1>
           <p className="text-gray-600">Track your health journey</p>
         </div>
 

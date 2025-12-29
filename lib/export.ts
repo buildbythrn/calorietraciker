@@ -80,7 +80,7 @@ export const exportToCSV = async (userId: string) => {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `calorie-tracker-export-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+  a.download = `fitflow-export-${format(new Date(), 'yyyy-MM-dd')}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -93,7 +93,7 @@ export const exportToPDF = async (userId: string, dateRange: DateRange = 'month'
 
   // Title
   doc.setFontSize(20);
-  doc.text('Calorie Tracker Report', 14, 20);
+  doc.text('FitFlow Report', 14, 20);
   doc.setFontSize(12);
   doc.text(`Period: ${format(start, 'MMM d, yyyy')} - ${format(end, 'MMM d, yyyy')}`, 14, 30);
 
@@ -165,7 +165,7 @@ export const exportToPDF = async (userId: string, dateRange: DateRange = 'month'
   }
 
   // Save PDF
-  doc.save(`calorie-tracker-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+  doc.save(`fitflow-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
 };
 
 export const backupData = async (userId: string): Promise<string> => {
@@ -238,7 +238,7 @@ export const backupData = async (userId: string): Promise<string> => {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `calorie-tracker-backup-${format(new Date(), 'yyyy-MM-dd')}.json`;
+  a.download = `fitflow-backup-${format(new Date(), 'yyyy-MM-dd')}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Calorie Tracker',
-    short_name: 'Calorie Tracker',
-    description: 'Track your calories, habits, and workouts',
+    name: 'FitFlow',
+    short_name: 'FitFlow',
+    description: 'Your all-in-one health and fitness tracking companion',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

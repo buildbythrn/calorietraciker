@@ -9,15 +9,15 @@ import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Calorie Tracker',
-  description: 'Track your calories, habits, and workouts',
+  title: 'FitFlow',
+  description: 'Your all-in-one health and fitness tracking companion',
   manifest: '/manifest.json',
   themeColor: '#22c55e',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Calorie Tracker',
+    title: 'FitFlow',
   },
 }
 

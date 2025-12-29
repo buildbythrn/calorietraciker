@@ -1,4 +1,4 @@
-# Calorie Tracker App
+# FitFlow
 
 A comprehensive health and fitness tracking application that allows users to:
 - Track daily calories
