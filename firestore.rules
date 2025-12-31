@@ -55,18 +55,32 @@ service cloud.firestore {
                        request.resource.data.mealType is string &&
                        request.resource.data.mealType in ['breakfast', 'lunch', 'dinner', 'snack'] &&
                        isValidDate(request.resource.data.date) &&
-                       request.resource.data.createdAt is timestamp;
+                       request.resource.data.createdAt is timestamp &&
+                       (!('quantity' in request.resource.data) || 
+                        (request.resource.data.quantity is number && 
+                         request.resource.data.quantity > 0));
       
       // Allow update if user owns it and userId doesn't change
+      // Support partial updates (merge pattern)
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.food is string &&
-                       request.resource.data.calories is number &&
-                       request.resource.data.calories >= 0 &&
-                       request.resource.data.mealType is string &&
-                       request.resource.data.mealType in ['breakfast', 'lunch', 'dinner', 'snack'] &&
-                       isValidDate(request.resource.data.date);
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
+                       (!('food' in request.resource.data) || 
+                        request.resource.data.food is string) &&
+                       (!('calories' in request.resource.data) || 
+                        (request.resource.data.calories is number && 
+                         request.resource.data.calories >= 0)) &&
+                       (!('mealType' in request.resource.data) || 
+                        (request.resource.data.mealType is string &&
+                         request.resource.data.mealType in ['breakfast', 'lunch', 'dinner', 'snack'])) &&
+                       (!('date' in request.resource.data) || 
+                        isValidDate(request.resource.data.date)) &&
+                       (!('quantity' in request.resource.data) || 
+                        (request.resource.data.quantity is number && 
+                         request.resource.data.quantity > 0)) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       // Allow delete if user owns it
       allow delete: if isAuthenticated() && 
@@ -92,12 +106,17 @@ service cloud.firestore {
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.name is string &&
-                       request.resource.data.name.size() > 0 &&
-                       request.resource.data.color is string &&
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
+                       (!('name' in request.resource.data) || 
+                        (request.resource.data.name is string && 
+                         request.resource.data.name.size() > 0)) &&
+                       (!('color' in request.resource.data) || 
+                        request.resource.data.color is string) &&
                        (!('description' in request.resource.data) || 
-                        request.resource.data.description is string);
+                        request.resource.data.description is string) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -121,10 +140,15 @@ service cloud.firestore {
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.habitId == resource.data.habitId &&
-                       request.resource.data.date == resource.data.date &&
-                       request.resource.data.completed is bool &&
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
+                       (!('habitId' in request.resource.data) || 
+                        request.resource.data.habitId == resource.data.habitId) &&
+                       (!('date' in request.resource.data) || 
+                        (request.resource.data.date == resource.data.date &&
+                         isValidDate(request.resource.data.date))) &&
+                       (!('completed' in request.resource.data) || 
+                        request.resource.data.completed is bool) &&
                        (!('createdAt' in request.resource.data) || 
                         request.resource.data.createdAt == resource.data.createdAt);
       
@@ -231,7 +255,8 @@ service cloud.firestore {
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
                        (!('type' in request.resource.data) || 
                         (request.resource.data.type == resource.data.type &&
                          request.resource.data.type is string &&
@@ -244,8 +269,16 @@ service cloud.firestore {
                          request.resource.data.period in ['daily', 'weekly', 'monthly'])) &&
                        (!('startDate' in request.resource.data) || 
                         isValidDate(request.resource.data.startDate)) &&
+                       (!('endDate' in request.resource.data) || 
+                        (request.resource.data.endDate is string || 
+                         request.resource.data.endDate == null)) &&
+                       (!('current' in request.resource.data) || 
+                        (request.resource.data.current is number && 
+                         request.resource.data.current >= 0)) &&
                        (!('isActive' in request.resource.data) || 
-                        request.resource.data.isActive is bool);
+                        request.resource.data.isActive is bool) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -265,15 +298,27 @@ service cloud.firestore {
                        request.resource.data.weight is number &&
                        request.resource.data.weight > 0 &&
                        request.resource.data.weight <= 1000 &&
-                       request.resource.data.createdAt is timestamp;
+                       request.resource.data.createdAt is timestamp &&
+                       (!('notes' in request.resource.data) || 
+                        (request.resource.data.notes is string || 
+                         request.resource.data.notes == null));
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.date == resource.data.date &&
-                       request.resource.data.weight is number &&
-                       request.resource.data.weight > 0 &&
-                       request.resource.data.weight <= 1000;
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
+                       (!('date' in request.resource.data) || 
+                        (request.resource.data.date == resource.data.date &&
+                         isValidDate(request.resource.data.date))) &&
+                       (!('weight' in request.resource.data) || 
+                        (request.resource.data.weight is number && 
+                         request.resource.data.weight > 0 && 
+                         request.resource.data.weight <= 1000)) &&
+                       (!('notes' in request.resource.data) || 
+                        (request.resource.data.notes is string || 
+                         request.resource.data.notes == null)) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -297,11 +342,17 @@ service cloud.firestore {
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.date == resource.data.date &&
-                       request.resource.data.amount is number &&
-                       request.resource.data.amount > 0 &&
-                       request.resource.data.amount <= 10000;
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
+                       (!('date' in request.resource.data) || 
+                        (request.resource.data.date == resource.data.date &&
+                         isValidDate(request.resource.data.date))) &&
+                       (!('amount' in request.resource.data) || 
+                        (request.resource.data.amount is number && 
+                         request.resource.data.amount > 0 && 
+                         request.resource.data.amount <= 10000)) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -342,14 +393,59 @@ service cloud.firestore {
                        (!('neck' in request.resource.data) || 
                         (request.resource.data.neck is number && 
                          request.resource.data.neck > 0 && 
-                         request.resource.data.neck <= 200));
+                         request.resource.data.neck <= 200)) &&
+                       (!('notes' in request.resource.data) || 
+                        (request.resource.data.notes is string || 
+                         request.resource.data.notes == null)) &&
+                       (!('photoUrl' in request.resource.data) || 
+                        (request.resource.data.photoUrl is string || 
+                         request.resource.data.photoUrl == null));
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
                        (!('date' in request.resource.data) || 
                         (request.resource.data.date == resource.data.date &&
-                         isValidDate(request.resource.data.date)));
+                         isValidDate(request.resource.data.date))) &&
+                       (!('waist' in request.resource.data) || 
+                        ((request.resource.data.waist is number && 
+                          request.resource.data.waist > 0 && 
+                          request.resource.data.waist <= 500) ||
+                         request.resource.data.waist == null)) &&
+                       (!('chest' in request.resource.data) || 
+                        ((request.resource.data.chest is number && 
+                          request.resource.data.chest > 0 && 
+                          request.resource.data.chest <= 500) ||
+                         request.resource.data.chest == null)) &&
+                       (!('arms' in request.resource.data) || 
+                        ((request.resource.data.arms is number && 
+                          request.resource.data.arms > 0 && 
+                          request.resource.data.arms <= 200) ||
+                         request.resource.data.arms == null)) &&
+                       (!('thighs' in request.resource.data) || 
+                        ((request.resource.data.thighs is number && 
+                          request.resource.data.thighs > 0 && 
+                          request.resource.data.thighs <= 200) ||
+                         request.resource.data.thighs == null)) &&
+                       (!('hips' in request.resource.data) || 
+                        ((request.resource.data.hips is number && 
+                          request.resource.data.hips > 0 && 
+                          request.resource.data.hips <= 500) ||
+                         request.resource.data.hips == null)) &&
+                       (!('neck' in request.resource.data) || 
+                        ((request.resource.data.neck is number && 
+                          request.resource.data.neck > 0 && 
+                          request.resource.data.neck <= 200) ||
+                         request.resource.data.neck == null)) &&
+                       (!('notes' in request.resource.data) || 
+                        (request.resource.data.notes is string || 
+                         request.resource.data.notes == null)) &&
+                       (!('photoUrl' in request.resource.data) || 
+                        (request.resource.data.photoUrl is string || 
+                         request.resource.data.photoUrl == null)) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -394,11 +490,13 @@ service cloud.firestore {
                        request.resource.data.updatedAt is timestamp;
       
       // Allow update if document ID matches user's ID and userId cannot be changed
+      // Note: With merge updates, userId might not be in the update payload
       allow update: if isAuthenticated() &&
                        request.auth.uid == settingsId &&
                        resource.data.userId == settingsId &&
-                       request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.userId == request.auth.uid &&
+                       (!('userId' in request.resource.data) || 
+                        (request.resource.data.userId == resource.data.userId &&
+                         request.resource.data.userId == request.auth.uid)) &&
                        (!('darkMode' in request.resource.data) || 
                         request.resource.data.darkMode is bool) &&
                        (!('notificationsEnabled' in request.resource.data) || 
@@ -406,7 +504,8 @@ service cloud.firestore {
                        (!('onboardingCompleted' in request.resource.data) || 
                         request.resource.data.onboardingCompleted is bool) &&
                        (!('bodyGoal' in request.resource.data) || 
-                        request.resource.data.bodyGoal is string) &&
+                        (request.resource.data.bodyGoal is string || 
+                         request.resource.data.bodyGoal == null)) &&
                        (!('profile' in request.resource.data) || 
                         request.resource.data.profile is map) &&
                        (!('dailyCalorieTarget' in request.resource.data) || 
@@ -440,7 +539,12 @@ service cloud.firestore {
                        isValidUserId(request.resource.data.userId) &&
                        request.resource.data.userId is string &&
                        isValidDate(request.resource.data.date) &&
-                       request.resource.data.createdAt is timestamp;
+                       request.resource.data.createdAt is timestamp &&
+                       (!('meals' in request.resource.data) || 
+                        request.resource.data.meals is map) &&
+                       (!('totalCalories' in request.resource.data) || 
+                        (request.resource.data.totalCalories is number && 
+                         request.resource.data.totalCalories >= 0));
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
@@ -465,14 +569,45 @@ service cloud.firestore {
                        request.resource.data.userId is string &&
                        request.resource.data.name is string &&
                        request.resource.data.name.size() > 0 &&
-                       request.resource.data.createdAt is timestamp;
+                       request.resource.data.createdAt is timestamp &&
+                       (!('description' in request.resource.data) || 
+                        (request.resource.data.description is string || 
+                         request.resource.data.description == null)) &&
+                       (!('exercises' in request.resource.data) || 
+                        request.resource.data.exercises is list) &&
+                       (!('type' in request.resource.data) || 
+                        (request.resource.data.type is string &&
+                         request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'])) &&
+                       (!('difficulty' in request.resource.data) || 
+                        (request.resource.data.difficulty is string &&
+                         request.resource.data.difficulty in ['beginner', 'intermediate', 'advanced'])) &&
+                       (!('estimatedDuration' in request.resource.data) || 
+                        (request.resource.data.estimatedDuration is number && 
+                         request.resource.data.estimatedDuration > 0));
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == resource.data.userId &&
+                       (!('userId' in request.resource.data) || 
+                        request.resource.data.userId == resource.data.userId) &&
                        (!('name' in request.resource.data) || 
                         (request.resource.data.name is string && 
-                         request.resource.data.name.size() > 0));
+                         request.resource.data.name.size() > 0)) &&
+                       (!('description' in request.resource.data) || 
+                        (request.resource.data.description is string || 
+                         request.resource.data.description == null)) &&
+                       (!('exercises' in request.resource.data) || 
+                        request.resource.data.exercises is list) &&
+                       (!('type' in request.resource.data) || 
+                        (request.resource.data.type is string &&
+                         request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'])) &&
+                       (!('difficulty' in request.resource.data) || 
+                        (request.resource.data.difficulty is string &&
+                         request.resource.data.difficulty in ['beginner', 'intermediate', 'advanced'])) &&
+                       (!('estimatedDuration' in request.resource.data) || 
+                        (request.resource.data.estimatedDuration is number && 
+                         request.resource.data.estimatedDuration > 0)) &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;

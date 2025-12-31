@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useState } from 'react';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -16,13 +17,16 @@ import {
   Moon,
   Sun,
   CheckCircle2,
-  Flag
+  Flag,
+  Menu,
+  X
 } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
 export default function Navigation() {
   const pathname = usePathname();
   const { darkMode, toggleDarkMode } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -81,14 +85,16 @@ export default function Navigation() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-40">
-        <div className="flex justify-around items-center h-16">
-          {navItems.slice(0, 5).map((item) => {
+        <div className="flex items-center h-16">
+          {/* Primary Navigation Items */}
+          {navItems.slice(0, 4).map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 className={`flex flex-col items-center justify-center flex-1 h-full ${
                   isActive
                     ? 'text-primary-600 dark:text-primary-400'
@@ -96,23 +102,81 @@ export default function Navigation() {
                 }`}
               >
                 <Icon size={20} />
-                <span className="text-xs mt-1">{item.label}</span>
+                <span className="text-[10px] mt-0.5 text-center leading-tight">{item.label}</span>
               </Link>
             );
           })}
-          <Link
-            href="/settings"
+          {/* More Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`flex flex-col items-center justify-center flex-1 h-full ${
-              pathname === '/settings'
+              mobileMenuOpen
                 ? 'text-primary-600 dark:text-primary-400'
                 : 'text-gray-600 dark:text-gray-400'
             }`}
           >
-            <Settings size={20} />
-            <span className="text-xs mt-1">More</span>
-          </Link>
+            <Menu size={20} />
+            <span className="text-[10px] mt-0.5 text-center leading-tight">More</span>
+          </button>
         </div>
       </nav>
+      
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <>
+          <div 
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div 
+            className="lg:hidden fixed bottom-16 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg max-h-[60vh] overflow-y-auto z-50"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between sticky top-0 bg-white dark:bg-gray-900">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">More Options</h3>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+              >
+                <X size={20} className="text-gray-600 dark:text-gray-400" />
+              </button>
+            </div>
+            <div className="p-4">
+              <ul className="space-y-2">
+                {navItems.slice(4).map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                          isActive
+                            ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 font-medium'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        }`}
+                      >
+                        <Icon size={20} />
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                <button
+                  onClick={toggleDarkMode}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                  <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

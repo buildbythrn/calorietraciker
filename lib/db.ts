@@ -655,6 +655,7 @@ export const updateUserSettings = async (userId: string, settings: Partial<UserS
   const settingsRef = doc(db, 'userSettings', userId);
   const dataToSave: any = {
     ...settings,
+    userId, // Always include userId to satisfy Firestore rules
     updatedAt: Timestamp.fromDate(new Date()),
   };
   
