@@ -22,7 +22,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   return (
     <>
       <Navigation />
-      <div className="lg:ml-64 pb-16 lg:pb-0">
+      <div className="lg:ml-64 pb-16 lg:pb-0 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
         {children}
       </div>
     </>

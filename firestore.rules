@@ -86,6 +86,8 @@ service cloud.firestore {
                        request.resource.data.name is string &&
                        request.resource.data.name.size() > 0 &&
                        request.resource.data.color is string &&
+                       (!('description' in request.resource.data) || 
+                        request.resource.data.description is string) &&
                        request.resource.data.createdAt is timestamp;
       
       allow update: if isAuthenticated() &&
@@ -93,7 +95,9 @@ service cloud.firestore {
                        request.resource.data.userId == resource.data.userId &&
                        request.resource.data.name is string &&
                        request.resource.data.name.size() > 0 &&
-                       request.resource.data.color is string;
+                       request.resource.data.color is string &&
+                       (!('description' in request.resource.data) || 
+                        request.resource.data.description is string);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -118,9 +122,12 @@ service cloud.firestore {
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
                        request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.userId == request.auth.uid &&
                        request.resource.data.habitId == resource.data.habitId &&
                        request.resource.data.date == resource.data.date &&
-                       request.resource.data.completed is bool;
+                       request.resource.data.completed is bool &&
+                       (!('createdAt' in request.resource.data) || 
+                        request.resource.data.createdAt == resource.data.createdAt);
       
       allow delete: if isAuthenticated() && 
                         resource.data.userId == request.auth.uid;
@@ -161,16 +168,43 @@ service cloud.firestore {
                         (request.resource.data.muscleGroups is list && 
                          request.resource.data.muscleGroups.size() <= 10)) &&
                        (!('exercise' in request.resource.data) || 
-                        request.resource.data.exercise is string);
+                        request.resource.data.exercise is string) &&
+                       (!('routine' in request.resource.data) || 
+                        request.resource.data.routine is string);
       
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
                        request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.name is string &&
-                       request.resource.data.name.size() > 0 &&
-                       request.resource.data.type is string &&
-                       request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'] &&
-                       isValidDate(request.resource.data.date);
+                       (!('name' in request.resource.data) || 
+                        (request.resource.data.name is string && 
+                         request.resource.data.name.size() > 0)) &&
+                       (!('type' in request.resource.data) || 
+                        (request.resource.data.type is string &&
+                         request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'])) &&
+                       (!('date' in request.resource.data) || 
+                        isValidDate(request.resource.data.date)) &&
+                       (!('duration' in request.resource.data) || 
+                        (request.resource.data.duration is number && 
+                         request.resource.data.duration >= 0)) &&
+                       (!('caloriesBurned' in request.resource.data) || 
+                        (request.resource.data.caloriesBurned is number && 
+                         request.resource.data.caloriesBurned >= 0)) &&
+                       (!('weight' in request.resource.data) || 
+                        (request.resource.data.weight is number && 
+                         request.resource.data.weight > 0)) &&
+                       (!('sets' in request.resource.data) || 
+                        (request.resource.data.sets is number && 
+                         request.resource.data.sets > 0)) &&
+                       (!('reps' in request.resource.data) || 
+                        (request.resource.data.reps is number && 
+                         request.resource.data.reps > 0)) &&
+                       (!('muscleGroups' in request.resource.data) || 
+                        (request.resource.data.muscleGroups is list && 
+                         request.resource.data.muscleGroups.size() <= 10)) &&
+                       (!('exercise' in request.resource.data) || 
+                        request.resource.data.exercise is string) &&
+                       (!('routine' in request.resource.data) || 
+                        request.resource.data.routine is string);
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -199,10 +233,18 @@ service cloud.firestore {
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
                        request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.type == resource.data.type &&
+                       (!('type' in request.resource.data) || 
+                        (request.resource.data.type == resource.data.type &&
+                         request.resource.data.type is string &&
+                         request.resource.data.type in ['calorie', 'workout', 'habit', 'weight'])) &&
                        (!('target' in request.resource.data) || 
                         (request.resource.data.target is number && 
                          request.resource.data.target > 0)) &&
+                       (!('period' in request.resource.data) || 
+                        (request.resource.data.period is string &&
+                         request.resource.data.period in ['daily', 'weekly', 'monthly'])) &&
+                       (!('startDate' in request.resource.data) || 
+                        isValidDate(request.resource.data.startDate)) &&
                        (!('isActive' in request.resource.data) || 
                         request.resource.data.isActive is bool);
       
@@ -306,7 +348,9 @@ service cloud.firestore {
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
                        request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.date == resource.data.date;
+                       (!('date' in request.resource.data) || 
+                        (request.resource.data.date == resource.data.date &&
+                         isValidDate(request.resource.data.date)));
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;
@@ -334,8 +378,20 @@ service cloud.firestore {
                         request.resource.data.onboardingCompleted is bool) &&
                        (!('bodyGoal' in request.resource.data) || 
                         request.resource.data.bodyGoal is string) &&
+                       (!('profile' in request.resource.data) || 
+                        request.resource.data.profile is map) &&
+                       (!('dailyCalorieTarget' in request.resource.data) || 
+                        (request.resource.data.dailyCalorieTarget is number && 
+                         request.resource.data.dailyCalorieTarget > 0 && 
+                         request.resource.data.dailyCalorieTarget <= 10000)) &&
+                       (!('reminderTimes' in request.resource.data) || 
+                        request.resource.data.reminderTimes is map) &&
                        (!('weeklyReminders' in request.resource.data) || 
                         request.resource.data.weeklyReminders is map) &&
+                       (!('units' in request.resource.data) || 
+                        request.resource.data.units is map) &&
+                       (!('workoutRoutines' in request.resource.data) || 
+                        request.resource.data.workoutRoutines is list) &&
                        request.resource.data.updatedAt is timestamp;
       
       // Allow update if document ID matches user's ID and userId cannot be changed
@@ -352,8 +408,22 @@ service cloud.firestore {
                         request.resource.data.onboardingCompleted is bool) &&
                        (!('bodyGoal' in request.resource.data) || 
                         request.resource.data.bodyGoal is string) &&
+                       (!('profile' in request.resource.data) || 
+                        request.resource.data.profile is map) &&
+                       (!('dailyCalorieTarget' in request.resource.data) || 
+                        (request.resource.data.dailyCalorieTarget is number && 
+                         request.resource.data.dailyCalorieTarget > 0 && 
+                         request.resource.data.dailyCalorieTarget <= 10000)) &&
+                       (!('reminderTimes' in request.resource.data) || 
+                        request.resource.data.reminderTimes is map) &&
                        (!('weeklyReminders' in request.resource.data) || 
-                        request.resource.data.weeklyReminders is map);
+                        request.resource.data.weeklyReminders is map) &&
+                       (!('units' in request.resource.data) || 
+                        request.resource.data.units is map) &&
+                       (!('workoutRoutines' in request.resource.data) || 
+                        request.resource.data.workoutRoutines is list) &&
+                       (!('updatedAt' in request.resource.data) || 
+                        request.resource.data.updatedAt is timestamp);
       
       // Allow delete if document ID matches user's ID
       allow delete: if isAuthenticated() && 
@@ -376,7 +446,9 @@ service cloud.firestore {
       allow update: if isAuthenticated() &&
                        resource.data.userId == request.auth.uid &&
                        request.resource.data.userId == resource.data.userId &&
-                       request.resource.data.date == resource.data.date;
+                       (!('date' in request.resource.data) || 
+                        (request.resource.data.date == resource.data.date &&
+                         isValidDate(request.resource.data.date)));
       
       allow delete: if isAuthenticated() && 
                        resource.data.userId == request.auth.uid;

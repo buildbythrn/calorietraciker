@@ -38,11 +38,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={`${inter.variable} ${poppins.variable} font-sans`}>
+      <body className={`${inter.variable} ${poppins.variable} font-sans bg-gray-50 dark:bg-gray-900 transition-colors`}>
         <AuthProvider>
           <ThemeProvider>
             <LayoutWrapper>

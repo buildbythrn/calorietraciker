@@ -364,17 +364,17 @@ export default function WorkoutsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-              <div className="flex items-center gap-3">
-                <PetMascot petType="cat" size="sm" iconType="workout" mood="energetic" className="animate-float" />
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Workout Tracker</h1>
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <PetMascot petType="cat" size="sm" iconType="workout" mood="energetic" className="animate-float flex-shrink-0" />
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Workout Tracker</h1>
               </div>
           </div>
         </div>
@@ -382,27 +382,27 @@ export default function WorkoutsPage() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Streak Display */}
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-sm p-6 mb-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
+        <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-sm p-4 sm:p-6 mb-6 text-white">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1">
               <p className="text-sm opacity-90 mb-1">Workout Streak</p>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4 sm:gap-6">
                 <div className="flex items-center gap-2">
-                  <Flame size={24} />
+                  <Flame size={20} className="sm:w-6 sm:h-6" />
                   <div>
                     <p className="text-xs opacity-90">Current</p>
-                    <p className="text-3xl font-bold">{streak.current} days</p>
+                    <p className="text-2xl sm:text-3xl font-bold">{streak.current} days</p>
                   </div>
                 </div>
                 <div>
                   <p className="text-xs opacity-90">Longest</p>
-                  <p className="text-3xl font-bold">{streak.longest} days</p>
+                  <p className="text-2xl sm:text-3xl font-bold">{streak.longest} days</p>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <PetMascot petType="cat" size="lg" iconType="workout" mood={streak.current > 0 ? "excited" : "energetic"} className="animate-float" />
-              <Dumbbell size={48} className="opacity-20" />
+            <div className="flex items-center gap-2 sm:gap-4">
+              <PetMascot petType="cat" size="md" iconType="workout" mood={streak.current > 0 ? "excited" : "energetic"} className="animate-float hidden sm:block" />
+              <Dumbbell size={32} className="sm:w-12 sm:h-12 opacity-20" />
             </div>
           </div>
         </div>
@@ -433,21 +433,22 @@ export default function WorkoutsPage() {
               </button>
             </div>
             {viewMode === 'week' && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 <button
                   onClick={() => setWeekStart(subDays(weekStart, 7))}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
                 </button>
-                <span className="text-sm text-gray-600 dark:text-gray-300 min-w-[120px] text-center">
-                  {format(weekStart, 'MMM d')} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'MMM d')}
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 min-w-[100px] sm:min-w-[120px] text-center px-1">
+                  <span className="hidden sm:inline">{format(weekStart, 'MMM d')} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'MMM d')}</span>
+                  <span className="sm:hidden">{format(weekStart, 'MMM d')} - {format(endOfWeek(weekStart, { weekStartsOn: 1 }), 'd')}</span>
                 </span>
                 <button
                   onClick={() => setWeekStart(subDays(weekStart, -7))}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={18} className="sm:w-5 sm:h-5" />
                 </button>
               </div>
             )}
@@ -461,10 +462,10 @@ export default function WorkoutsPage() {
                 setCheckedExercises({});
               }
             }}
-            className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+            className="flex items-center gap-2 bg-primary-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors w-full sm:w-auto justify-center"
           >
-            <Plus size={20} />
-            Add Workout
+            <Plus size={18} className="sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">Add Workout</span>
           </button>
         </div>
 
@@ -754,8 +755,8 @@ export default function WorkoutsPage() {
 
         {/* New Workout Form */}
         {showAddForm && workoutMode === 'new' && (
-          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Add Workout</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add Workout</h2>
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -884,7 +885,7 @@ export default function WorkoutsPage() {
                               />
                             </div>
                             
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                               <div>
                                 <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                   Duration (min)
@@ -913,7 +914,7 @@ export default function WorkoutsPage() {
                                     setRoutineExercises(updated);
                                   }}
                                   min="1"
-                                  className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                  className="w-full px-3 py-2 sm:px-2 sm:py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   placeholder="30"
                                 />
                               </div>
@@ -930,7 +931,7 @@ export default function WorkoutsPage() {
                                     setRoutineExercises(updated);
                                   }}
                                   min="1"
-                                  className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                  className="w-full px-3 py-2 sm:px-2 sm:py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                   placeholder="250"
                                 />
                               </div>
@@ -959,7 +960,7 @@ export default function WorkoutsPage() {
                                       }}
                                       min="0"
                                       step="0.5"
-                                      className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                      className="w-full px-3 py-2 sm:px-2 sm:py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                       placeholder="20"
                                     />
                                   </div>
@@ -986,7 +987,7 @@ export default function WorkoutsPage() {
                                           setRoutineExercises(updated);
                                         }}
                                         min="1"
-                                        className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                        className="w-full px-3 py-2 sm:px-2 sm:py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                         placeholder="3"
                                       />
                                       <span className="self-center text-gray-500">×</span>
@@ -1008,7 +1009,7 @@ export default function WorkoutsPage() {
                                           setRoutineExercises(updated);
                                         }}
                                         min="1"
-                                        className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                        className="w-full px-3 py-2 sm:px-2 sm:py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                         placeholder="10"
                                       />
                                     </div>
@@ -1104,7 +1105,7 @@ export default function WorkoutsPage() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Duration (minutes)
                   </label>
                   <input
@@ -1112,12 +1113,12 @@ export default function WorkoutsPage() {
                     value={formData.duration}
                     onChange={(e) => handleDurationChange(e.target.value)}
                     min="1"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="30"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Calories Burned
                   </label>
                   <input
@@ -1125,7 +1126,7 @@ export default function WorkoutsPage() {
                     value={formData.caloriesBurned}
                     onChange={(e) => setFormData({ ...formData, caloriesBurned: e.target.value })}
                     min="1"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                     placeholder="250"
                   />
                   {selectedExercise && (
@@ -1147,7 +1148,7 @@ export default function WorkoutsPage() {
               </div>
               
               {(formData.type === 'strength' || formData.type === 'other') && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-gray-200">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Weight (kg) <span className="text-gray-400 font-normal">(optional)</span>
@@ -1192,20 +1193,20 @@ export default function WorkoutsPage() {
               )}
 
               {/* Date Selection */}
-              <div className="pt-2 border-t border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Select Days <span className="text-gray-400 font-normal">(optional - defaults to today)</span>
+              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Select Days <span className="text-gray-400 dark:text-gray-500 font-normal text-xs">(optional - defaults to today)</span>
                   </label>
                   <button
                     type="button"
                     onClick={selectWeek}
-                    className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                    className="text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
                   >
                     Select This Week
                   </button>
                 </div>
-                <div className="grid grid-cols-7 gap-2">
+                <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
                   {eachDayOfInterval({ 
                     start: startOfWeek(new Date(), { weekStartsOn: 1 }), 
                     end: endOfWeek(new Date(), { weekStartsOn: 1 }) 
@@ -1219,23 +1220,23 @@ export default function WorkoutsPage() {
                         key={dateStr}
                         type="button"
                         onClick={() => toggleDateSelection(dateStr)}
-                        className={`p-2 rounded-lg text-center text-sm transition-colors ${
+                        className={`p-1.5 sm:p-2 rounded-lg text-center text-xs sm:text-sm transition-colors ${
                           isSelected
                             ? 'bg-primary-600 text-white'
                             : isToday
-                            ? 'bg-primary-100 text-primary-700 border-2 border-primary-300'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 border-2 border-primary-300 dark:border-primary-700'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                         }`}
                       >
-                        <div className="text-xs opacity-75">{format(day, 'EEE')}</div>
-                        <div className="font-semibold">{format(day, 'd')}</div>
+                        <div className="text-[10px] sm:text-xs opacity-75">{format(day, 'EEE')}</div>
+                        <div className="font-semibold text-sm sm:text-base">{format(day, 'd')}</div>
                       </button>
                     );
                   })}
                 </div>
                 {formData.selectedDates.length > 0 && (
-                  <p className="text-xs text-gray-500 mt-2">
-                    Selected: {formData.selectedDates.length} day(s) - {formData.selectedDates.map(d => format(parseISO(d), 'MMM d')).join(', ')}
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 break-words">
+                    Selected: {formData.selectedDates.length} day(s) - <span className="hidden sm:inline">{formData.selectedDates.map(d => format(parseISO(d), 'MMM d')).join(', ')}</span><span className="sm:hidden">{formData.selectedDates.slice(0, 2).map(d => format(parseISO(d), 'MMM d')).join(', ')}{formData.selectedDates.length > 2 ? ` +${formData.selectedDates.length - 2} more` : ''}</span>
                   </p>
                 )}
               </div>
@@ -1254,7 +1255,7 @@ export default function WorkoutsPage() {
                     setFormData({ name: '', type: 'cardio', duration: '', caloriesBurned: '', weight: '', sets: '', reps: '', routine: '', selectedDates: [], muscleGroups: [] });
                     setSelectedExercise(null);
                   }}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 sm:px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
                 >
                   Cancel
                 </button>
@@ -1280,38 +1281,39 @@ export default function WorkoutsPage() {
           <div className="space-y-4">
             {workoutsByDay.map((day) => (
               <div key={day.date} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Calendar className="text-purple-600 dark:text-purple-400" size={20} />
-                      <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {format(parseISO(day.date), 'EEEE, MMMM d, yyyy')}
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Calendar className="text-purple-600 dark:text-purple-400 sm:w-5 sm:h-5 flex-shrink-0" size={18} />
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">
+                          <span className="hidden sm:inline">{format(parseISO(day.date), 'EEEE, MMMM d, yyyy')}</span>
+                          <span className="sm:hidden">{format(parseISO(day.date), 'EEE, MMM d')}</span>
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                           {day.workouts.length} workout{day.workouts.length !== 1 ? 's' : ''}
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Total Calories</p>
-                      <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    <div className="text-left sm:text-right">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Total Calories</p>
+                      <p className="text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">
                         {day.totalCalories}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="p-6 space-y-3">
+                <div className="p-4 sm:p-6 space-y-3">
                   {day.workouts.map((workout) => (
                     <div
                       key={workout.id}
-                      className="flex justify-between items-start p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                      className="flex justify-between items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                     >
-                      <div className="flex-1">
-                        <p className="font-semibold text-lg mb-1 text-gray-900 dark:text-white">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-base sm:text-lg mb-1 text-gray-900 dark:text-white break-words">
                           {workout.name}
                           {workout.routine && (
-                            <span className="ml-2 text-sm font-normal text-primary-600 dark:text-primary-400">
+                            <span className="ml-2 text-xs sm:text-sm font-normal text-primary-600 dark:text-primary-400">
                               ({workout.routine})
                             </span>
                           )}
@@ -1354,7 +1356,7 @@ export default function WorkoutsPage() {
                       </div>
                       <button
                         onClick={() => handleDelete(workout.id)}
-                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors ml-4"
+                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
                       >
                         <Trash2 size={18} />
                       </button>
