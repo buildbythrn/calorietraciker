@@ -12,6 +12,7 @@ import NotificationSettings from '@/components/NotificationSettings';
 import { useTheme } from '@/components/ThemeProvider';
 import ExerciseSearch from '@/components/ExerciseSearch';
 import { Exercise, calculateCaloriesBurned } from '@/lib/exerciseApi';
+import { setupWeeklyReminders } from '@/lib/notifications';
 
 export default function SettingsPage() {
   const { user, loading, logout } = useAuth();
@@ -301,6 +302,202 @@ export default function SettingsPage() {
         {/* Notifications */}
         <div className="mb-6">
           <NotificationSettings />
+        </div>
+
+        {/* Weekly Reminders */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weekly Reminders</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Get reminded to track your weight and measurements on a specific day each week
+          </p>
+          
+          {/* Weight Reminder */}
+          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white">Weight Check Reminder</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Remind me to log my weight</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={settings?.weeklyReminders?.weight?.enabled || false}
+                  onChange={async (e) => {
+                    if (!user || !settings) return;
+                    const updated = {
+                      ...settings.weeklyReminders,
+                      weight: {
+                        enabled: e.target.checked,
+                        dayOfWeek: settings.weeklyReminders?.weight?.dayOfWeek ?? 1, // Monday by default
+                        time: settings.weeklyReminders?.weight?.time || '09:00',
+                      },
+                    };
+                    await updateUserSettings(user.id, { weeklyReminders: updated });
+                    const updatedSettings = await getUserSettings(user.id);
+                    if (updatedSettings) {
+                      setSettings(updatedSettings);
+                      if (e.target.checked) {
+                        await setupWeeklyReminders(user.id);
+                      }
+                    }
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+              </label>
+            </div>
+            {settings?.weeklyReminders?.weight?.enabled && (
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Day of Week
+                  </label>
+                  <select
+                    value={settings.weeklyReminders.weight.dayOfWeek}
+                    onChange={async (e) => {
+                      if (!user || !settings || !settings.weeklyReminders?.weight) return;
+                      const updated = {
+                        ...settings.weeklyReminders,
+                        weight: {
+                          ...settings.weeklyReminders.weight,
+                          dayOfWeek: parseInt(e.target.value),
+                        },
+                      };
+                      await updateUserSettings(user.id, { weeklyReminders: updated });
+                      const updatedSettings = await getUserSettings(user.id);
+                      if (updatedSettings) setSettings(updatedSettings);
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
+                  >
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    value={settings.weeklyReminders.weight.time}
+                    onChange={async (e) => {
+                      if (!user || !settings || !settings.weeklyReminders?.weight) return;
+                      const updated = {
+                        ...settings.weeklyReminders,
+                        weight: {
+                          ...settings.weeklyReminders.weight,
+                          time: e.target.value,
+                        },
+                      };
+                      await updateUserSettings(user.id, { weeklyReminders: updated });
+                      const updatedSettings = await getUserSettings(user.id);
+                      if (updatedSettings) setSettings(updatedSettings);
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Measurements Reminder */}
+          <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white">Measurements Reminder</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Remind me to log my body measurements</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={settings?.weeklyReminders?.measurements?.enabled || false}
+                  onChange={async (e) => {
+                    if (!user || !settings) return;
+                    const updated = {
+                      ...settings.weeklyReminders,
+                      measurements: {
+                        enabled: e.target.checked,
+                        dayOfWeek: settings.weeklyReminders?.measurements?.dayOfWeek ?? 1, // Monday by default
+                        time: settings.weeklyReminders?.measurements?.time || '09:00',
+                      },
+                    };
+                    await updateUserSettings(user.id, { weeklyReminders: updated });
+                    const updatedSettings = await getUserSettings(user.id);
+                    if (updatedSettings) {
+                      setSettings(updatedSettings);
+                      if (e.target.checked) {
+                        await setupWeeklyReminders(user.id);
+                      }
+                    }
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+              </label>
+            </div>
+            {settings?.weeklyReminders?.measurements?.enabled && (
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Day of Week
+                  </label>
+                  <select
+                    value={settings.weeklyReminders.measurements.dayOfWeek}
+                    onChange={async (e) => {
+                      if (!user || !settings || !settings.weeklyReminders?.measurements) return;
+                      const updated = {
+                        ...settings.weeklyReminders,
+                        measurements: {
+                          ...settings.weeklyReminders.measurements,
+                          dayOfWeek: parseInt(e.target.value),
+                        },
+                      };
+                      await updateUserSettings(user.id, { weeklyReminders: updated });
+                      const updatedSettings = await getUserSettings(user.id);
+                      if (updatedSettings) setSettings(updatedSettings);
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
+                  >
+                    <option value="0">Sunday</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Time
+                  </label>
+                  <input
+                    type="time"
+                    value={settings.weeklyReminders.measurements.time}
+                    onChange={async (e) => {
+                      if (!user || !settings || !settings.weeklyReminders?.measurements) return;
+                      const updated = {
+                        ...settings.weeklyReminders,
+                        measurements: {
+                          ...settings.weeklyReminders.measurements,
+                          time: e.target.value,
+                        },
+                      };
+                      await updateUserSettings(user.id, { weeklyReminders: updated });
+                      const updatedSettings = await getUserSettings(user.id);
+                      if (updatedSettings) setSettings(updatedSettings);
+                    }}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Workout Routines */}

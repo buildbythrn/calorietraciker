@@ -43,6 +43,8 @@ export interface Workout {
   weight?: number; // in kg or lbs (optional, for strength training)
   sets?: number; // optional, for strength training
   reps?: number; // optional, for strength training
+  muscleGroups?: string[]; // e.g., ['Chest', 'Triceps', 'Shoulders']
+  exercise?: string; // Exercise name from exercise database
   routine?: string; // Optional workout routine/template (e.g., "Chest + Triceps")
   date: string; // YYYY-MM-DD format
   createdAt: Date;
@@ -159,6 +161,8 @@ export interface WorkoutRoutine {
     weight?: number; // in kg
     sets?: number;
     reps?: number;
+    muscleGroups?: string[]; // e.g., ['Chest', 'Triceps']
+    exercise?: string; // Exercise name from exercise database
   }[];
   createdAt: Date;
 }
@@ -186,6 +190,18 @@ export interface UserSettings {
     workouts?: string[];
     habits?: string[];
     water?: string[];
+  };
+  weeklyReminders?: {
+    weight?: {
+      enabled: boolean;
+      dayOfWeek: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      time: string; // HH:mm format
+    };
+    measurements?: {
+      enabled: boolean;
+      dayOfWeek: number; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+      time: string; // HH:mm format
+    };
   };
   units: {
     weight: 'kg' | 'lbs';

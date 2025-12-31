@@ -109,3 +109,103 @@ export const setupDailyReminders = async (userId: string) => {
   }
 };
 
+// Schedule weekly reminder for weight or measurements
+export const scheduleWeeklyReminder = async (
+  userId: string,
+  type: 'weight' | 'measurements',
+  dayOfWeek: number, // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  time: string, // HH:mm format
+  message: string
+) => {
+  const settings = await getUserSettings(userId);
+  if (!settings?.notificationsEnabled) {
+    return;
+  }
+
+  const [hours, minutes] = time.split(':').map(Number);
+  const now = new Date();
+  const currentDay = now.getDay();
+  
+  // Calculate days until next reminder day
+  let daysUntilReminder = dayOfWeek - currentDay;
+  if (daysUntilReminder < 0) {
+    daysUntilReminder += 7; // Next week
+  } else if (daysUntilReminder === 0) {
+    // Same day - check if time has passed
+    const reminderTime = new Date();
+    reminderTime.setHours(hours, minutes, 0, 0);
+    if (reminderTime <= now) {
+      daysUntilReminder = 7; // Next week
+    }
+  }
+
+  const reminderDate = new Date(now);
+  reminderDate.setDate(now.getDate() + daysUntilReminder);
+  reminderDate.setHours(hours, minutes, 0, 0);
+
+  const delay = reminderDate.getTime() - now.getTime();
+
+  setTimeout(() => {
+    requestNotificationPermission().then(permission => {
+      if (permission.granted) {
+        showNotification('Weekly Reminder', {
+          body: message,
+          tag: `weekly-reminder-${type}`,
+        });
+        // Schedule next week's reminder
+        scheduleWeeklyReminder(userId, type, dayOfWeek, time, message);
+      }
+    });
+  }, delay);
+};
+
+// Setup weekly reminders
+export const setupWeeklyReminders = async (userId: string) => {
+  const settings = await getUserSettings(userId);
+  if (!settings?.notificationsEnabled || !settings.weeklyReminders) {
+    return;
+  }
+
+  if (settings.weeklyReminders.weight?.enabled) {
+    scheduleWeeklyReminder(
+      userId,
+      'weight',
+      settings.weeklyReminders.weight.dayOfWeek,
+      settings.weeklyReminders.weight.time,
+      "It's time to log your weight! 📊"
+    );
+  }
+
+  if (settings.weeklyReminders.measurements?.enabled) {
+    scheduleWeeklyReminder(
+      userId,
+      'measurements',
+      settings.weeklyReminders.measurements.dayOfWeek,
+      settings.weeklyReminders.measurements.time,
+      "Don't forget to log your body measurements! 📏"
+    );
+  }
+};
+
+// Check if today is a reminder day
+export const checkWeeklyReminder = (
+  dayOfWeek: number,
+  time: string
+): boolean => {
+  const now = new Date();
+  const currentDay = now.getDay();
+  const [hours, minutes] = time.split(':').map(Number);
+  
+  if (currentDay !== dayOfWeek) {
+    return false;
+  }
+
+  // Check if we're past the reminder time today
+  const reminderTime = new Date();
+  reminderTime.setHours(hours, minutes, 0, 0);
+  
+  // Consider it a reminder day if we're within 2 hours of the reminder time
+  const timeDiff = now.getTime() - reminderTime.getTime();
+  return timeDiff >= 0 && timeDiff < 2 * 60 * 60 * 1000; // Within 2 hours
+};
+

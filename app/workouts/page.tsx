@@ -9,7 +9,7 @@ import { ArrowLeft, Plus, Trash2, Flame, Dumbbell, Calendar, ChevronLeft, Chevro
 import { getWorkouts, addWorkout, deleteWorkout, calculateWorkoutStreak, getUserSettings } from '@/lib/db';
 import { Workout, Streak, WorkoutRoutine } from '@/lib/types';
 import ExerciseSearch from '@/components/ExerciseSearch';
-import { Exercise, calculateCaloriesBurned } from '@/lib/exerciseApi';
+import { Exercise, calculateCaloriesBurned, calculateStrengthCalories, getAllMuscleGroups } from '@/lib/exerciseApi';
 import PetMascot from '@/components/mascots/PetMascot';
 
 interface DayWorkouts {
@@ -41,7 +41,10 @@ export default function WorkoutsPage() {
     reps: '',
     routine: '',
     selectedDates: [] as string[],
+    muscleGroups: [] as string[],
   });
+  const [availableMuscleGroups, setAvailableMuscleGroups] = useState<string[]>([]);
+  const [userWeight, setUserWeight] = useState<number>(70); // Default 70kg
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [routineExercises, setRoutineExercises] = useState<Array<{
     name: string;
@@ -52,6 +55,7 @@ export default function WorkoutsPage() {
     sets?: string;
     reps?: string;
     exercise?: Exercise | null;
+    muscleGroups?: string[];
   }>>([]);
 
   // Predefined workout routines
@@ -76,8 +80,27 @@ export default function WorkoutsPage() {
       loadAllWorkouts();
       loadStreak();
       loadSavedRoutines();
+      loadMuscleGroups();
+      loadUserWeight();
     }
   }, [user]);
+
+  const loadMuscleGroups = () => {
+    const groups = getAllMuscleGroups();
+    setAvailableMuscleGroups(groups);
+  };
+
+  const loadUserWeight = async () => {
+    if (!user) return;
+    try {
+      const settings = await getUserSettings(user.id);
+      if (settings?.profile?.weight) {
+        setUserWeight(settings.profile.weight);
+      }
+    } catch (error) {
+      console.error('Error loading user weight:', error);
+    }
+  };
 
   const loadSavedRoutines = async () => {
     if (!user) return;
@@ -179,6 +202,8 @@ export default function WorkoutsPage() {
               weight: exercise.weight ? parseFloat(exercise.weight) : undefined,
               sets: exercise.sets ? parseInt(exercise.sets) : undefined,
               reps: exercise.reps ? parseInt(exercise.reps) : undefined,
+              muscleGroups: exercise.exercise?.muscleGroups || exercise.muscleGroups || undefined,
+              exercise: exercise.exercise?.name || exercise.name,
               routine: formData.routine || undefined,
               date,
             });
@@ -196,6 +221,8 @@ export default function WorkoutsPage() {
             weight: formData.weight ? parseFloat(formData.weight) : undefined,
             sets: formData.sets ? parseInt(formData.sets) : undefined,
             reps: formData.reps ? parseInt(formData.reps) : undefined,
+            muscleGroups: formData.muscleGroups.length > 0 ? formData.muscleGroups : (selectedExercise?.muscleGroups || undefined),
+            exercise: selectedExercise?.name || formData.name,
             routine: formData.routine || undefined,
             date,
           });
@@ -212,6 +239,7 @@ export default function WorkoutsPage() {
         reps: '',
         routine: '',
         selectedDates: [],
+        muscleGroups: [],
       });
       setSelectedExercise(null);
       setRoutineExercises([]);
@@ -226,12 +254,26 @@ export default function WorkoutsPage() {
 
   const handleExerciseSelect = (exercise: Exercise) => {
     setSelectedExercise(exercise);
-    setFormData(prev => ({ ...prev, type: exercise.type }));
+    setFormData(prev => ({ 
+      ...prev, 
+      type: exercise.type,
+      muscleGroups: exercise.muscleGroups || [],
+      name: exercise.name
+    }));
     
-    if (formData.duration) {
+    // Calculate calories based on exercise type
+    if (exercise.type === 'strength' && formData.weight && formData.sets && formData.reps) {
+      const weight = parseFloat(formData.weight);
+      const sets = parseInt(formData.sets);
+      const reps = parseInt(formData.reps);
+      if (weight > 0 && sets > 0 && reps > 0) {
+        const calories = calculateStrengthCalories(exercise, weight, sets, reps, userWeight);
+        setFormData(prev => ({ ...prev, caloriesBurned: calories.toString() }));
+      }
+    } else if (formData.duration) {
       const duration = parseInt(formData.duration);
       if (duration > 0) {
-        const calories = calculateCaloriesBurned(exercise, duration);
+        const calories = calculateCaloriesBurned(exercise, duration, userWeight);
         setFormData(prev => ({ ...prev, caloriesBurned: calories.toString() }));
       }
     }
@@ -243,7 +285,35 @@ export default function WorkoutsPage() {
     if (selectedExercise && duration) {
       const durationNum = parseInt(duration);
       if (durationNum > 0) {
-        const calories = calculateCaloriesBurned(selectedExercise, durationNum);
+        // For strength exercises with weight/sets/reps, use strength calculation
+        if (selectedExercise.type === 'strength' && formData.weight && formData.sets && formData.reps) {
+          const weight = parseFloat(formData.weight);
+          const sets = parseInt(formData.sets);
+          const reps = parseInt(formData.reps);
+          if (weight > 0 && sets > 0 && reps > 0) {
+            const calories = calculateStrengthCalories(selectedExercise, weight, sets, reps, userWeight);
+            setFormData(prev => ({ ...prev, caloriesBurned: calories.toString() }));
+            return;
+          }
+        }
+        // For cardio/flexibility, use duration-based calculation
+        const calories = calculateCaloriesBurned(selectedExercise, durationNum, userWeight);
+        setFormData(prev => ({ ...prev, caloriesBurned: calories.toString() }));
+      }
+    }
+  };
+
+  // Handle weight/sets/reps changes for strength exercises
+  const handleStrengthFieldsChange = (field: 'weight' | 'sets' | 'reps', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    if (selectedExercise && selectedExercise.type === 'strength') {
+      const weight = field === 'weight' ? parseFloat(value) : parseFloat(formData.weight || '0');
+      const sets = field === 'sets' ? parseInt(value) : parseInt(formData.sets || '0');
+      const reps = field === 'reps' ? parseInt(value) : parseInt(formData.reps || '0');
+      
+      if (weight > 0 && sets > 0 && reps > 0) {
+        const calories = calculateStrengthCalories(selectedExercise, weight, sets, reps, userWeight);
         setFormData(prev => ({ ...prev, caloriesBurned: calories.toString() }));
       }
     }
@@ -644,6 +714,8 @@ export default function WorkoutsPage() {
                                   weight: exercise.weight,
                                   sets: exercise.sets,
                                   reps: exercise.reps,
+                                  muscleGroups: exercise.muscleGroups,
+                                  exercise: exercise.exercise || exercise.name,
                                   routine: selectedRoutine.name,
                                   date,
                                 });
@@ -789,11 +861,20 @@ export default function WorkoutsPage() {
                                     name: ex.name,
                                     type: ex.type,
                                     exercise: ex,
+                                    muscleGroups: ex.muscleGroups || [],
                                   };
-                                  if (exercise.duration) {
+                                  // Auto-calculate calories
+                                  if (ex.type === 'strength' && exercise.weight && exercise.sets && exercise.reps) {
+                                    const weight = parseFloat(exercise.weight);
+                                    const sets = parseInt(exercise.sets);
+                                    const reps = parseInt(exercise.reps);
+                                    if (weight > 0 && sets > 0 && reps > 0) {
+                                      updated[index].caloriesBurned = calculateStrengthCalories(ex, weight, sets, reps, userWeight).toString();
+                                    }
+                                  } else if (exercise.duration) {
                                     const duration = parseInt(exercise.duration);
                                     if (duration > 0) {
-                                      updated[index].caloriesBurned = calculateCaloriesBurned(ex, duration).toString();
+                                      updated[index].caloriesBurned = calculateCaloriesBurned(ex, duration, userWeight).toString();
                                     }
                                   }
                                   setRoutineExercises(updated);
@@ -814,10 +895,19 @@ export default function WorkoutsPage() {
                                   onChange={(e) => {
                                     const updated = [...routineExercises];
                                     updated[index].duration = e.target.value;
-                                    if (exercise.exercise && e.target.value) {
-                                      const duration = parseInt(e.target.value);
-                                      if (duration > 0) {
-                                        updated[index].caloriesBurned = calculateCaloriesBurned(exercise.exercise, duration).toString();
+                                    if (exercise.exercise) {
+                                      if (exercise.exercise.type === 'strength' && exercise.weight && exercise.sets && exercise.reps) {
+                                        const weight = parseFloat(exercise.weight);
+                                        const sets = parseInt(exercise.sets);
+                                        const reps = parseInt(exercise.reps);
+                                        if (weight > 0 && sets > 0 && reps > 0) {
+                                          updated[index].caloriesBurned = calculateStrengthCalories(exercise.exercise, weight, sets, reps, userWeight).toString();
+                                        }
+                                      } else if (e.target.value) {
+                                        const duration = parseInt(e.target.value);
+                                        if (duration > 0) {
+                                          updated[index].caloriesBurned = calculateCaloriesBurned(exercise.exercise, duration, userWeight).toString();
+                                        }
                                       }
                                     }
                                     setRoutineExercises(updated);
@@ -856,6 +946,15 @@ export default function WorkoutsPage() {
                                       onChange={(e) => {
                                         const updated = [...routineExercises];
                                         updated[index].weight = e.target.value;
+                                        // Auto-calculate calories for strength exercises
+                                        if (updated[index].exercise && updated[index].exercise.type === 'strength' && e.target.value && updated[index].sets && updated[index].reps) {
+                                          const weight = parseFloat(e.target.value);
+                                          const sets = parseInt(updated[index].sets || '0');
+                                          const reps = parseInt(updated[index].reps || '0');
+                                          if (weight > 0 && sets > 0 && reps > 0) {
+                                            updated[index].caloriesBurned = calculateStrengthCalories(updated[index].exercise, weight, sets, reps, userWeight).toString();
+                                          }
+                                        }
                                         setRoutineExercises(updated);
                                       }}
                                       min="0"
@@ -875,6 +974,15 @@ export default function WorkoutsPage() {
                                         onChange={(e) => {
                                           const updated = [...routineExercises];
                                           updated[index].sets = e.target.value;
+                                          // Auto-calculate calories for strength exercises
+                                          if (updated[index].exercise && updated[index].exercise.type === 'strength' && e.target.value && updated[index].weight && updated[index].reps) {
+                                            const weight = parseFloat(updated[index].weight || '0');
+                                            const sets = parseInt(e.target.value);
+                                            const reps = parseInt(updated[index].reps || '0');
+                                            if (weight > 0 && sets > 0 && reps > 0) {
+                                              updated[index].caloriesBurned = calculateStrengthCalories(updated[index].exercise, weight, sets, reps, userWeight).toString();
+                                            }
+                                          }
                                           setRoutineExercises(updated);
                                         }}
                                         min="1"
@@ -888,6 +996,15 @@ export default function WorkoutsPage() {
                                         onChange={(e) => {
                                           const updated = [...routineExercises];
                                           updated[index].reps = e.target.value;
+                                          // Auto-calculate calories for strength exercises
+                                          if (updated[index].exercise && updated[index].exercise.type === 'strength' && e.target.value && updated[index].weight && updated[index].sets) {
+                                            const weight = parseFloat(updated[index].weight || '0');
+                                            const sets = parseInt(updated[index].sets || '0');
+                                            const reps = parseInt(e.target.value);
+                                            if (weight > 0 && sets > 0 && reps > 0) {
+                                              updated[index].caloriesBurned = calculateStrengthCalories(updated[index].exercise, weight, sets, reps, userWeight).toString();
+                                            }
+                                          }
                                           setRoutineExercises(updated);
                                         }}
                                         min="1"
@@ -932,7 +1049,7 @@ export default function WorkoutsPage() {
                 <select
                   value={formData.type}
                   onChange={(e) => {
-                    setFormData({ ...formData, type: e.target.value as any });
+                    setFormData({ ...formData, type: e.target.value as any, muscleGroups: [] });
                     setSelectedExercise(null);
                   }}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
@@ -943,6 +1060,46 @@ export default function WorkoutsPage() {
                   <option value="other">Other</option>
                 </select>
                   </div>
+
+                  {/* Muscle Groups Selection */}
+                  {formData.type === 'strength' && availableMuscleGroups.length > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Muscle Groups <span className="text-gray-400 font-normal">(optional)</span>
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {availableMuscleGroups.map((group) => {
+                          const isSelected = formData.muscleGroups.includes(group);
+                          return (
+                            <button
+                              key={group}
+                              type="button"
+                              onClick={() => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  muscleGroups: isSelected
+                                    ? prev.muscleGroups.filter(g => g !== group)
+                                    : [...prev.muscleGroups, group]
+                                }));
+                              }}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                isSelected
+                                  ? 'bg-primary-600 text-white'
+                                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                              }`}
+                            >
+                              {group}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {formData.muscleGroups.length > 0 && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          Selected: {formData.muscleGroups.join(', ')}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -971,9 +1128,19 @@ export default function WorkoutsPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="250"
                   />
-                  {selectedExercise && formData.duration && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Auto-calculated: ~{calculateCaloriesBurned(selectedExercise, parseInt(formData.duration) || 0)} cal
+                  {selectedExercise && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {formData.type === 'strength' && formData.weight && formData.sets && formData.reps ? (
+                        <>Auto-calculated: ~{calculateStrengthCalories(
+                          selectedExercise, 
+                          parseFloat(formData.weight) || 0, 
+                          parseInt(formData.sets) || 0, 
+                          parseInt(formData.reps) || 0,
+                          userWeight
+                        )} cal (based on weight × sets × reps)</>
+                      ) : formData.duration ? (
+                        <>Auto-calculated: ~{calculateCaloriesBurned(selectedExercise, parseInt(formData.duration) || 0, userWeight)} cal</>
+                      ) : null}
                     </p>
                   )}
                 </div>
@@ -982,42 +1149,42 @@ export default function WorkoutsPage() {
               {(formData.type === 'strength' || formData.type === 'other') && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-gray-200">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Weight (kg) <span className="text-gray-400 font-normal">(optional)</span>
                     </label>
                     <input
                       type="number"
                       value={formData.weight}
-                      onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                      onChange={(e) => handleStrengthFieldsChange('weight', e.target.value)}
                       min="0"
                       step="0.1"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       placeholder="e.g., 20"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Sets <span className="text-gray-400 font-normal">(optional)</span>
                     </label>
                     <input
                       type="number"
                       value={formData.sets}
-                      onChange={(e) => setFormData({ ...formData, sets: e.target.value })}
+                      onChange={(e) => handleStrengthFieldsChange('sets', e.target.value)}
                       min="1"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       placeholder="e.g., 3"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Reps <span className="text-gray-400 font-normal">(optional)</span>
                     </label>
                     <input
                       type="number"
                       value={formData.reps}
-                      onChange={(e) => setFormData({ ...formData, reps: e.target.value })}
+                      onChange={(e) => handleStrengthFieldsChange('reps', e.target.value)}
                       min="1"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                       placeholder="e.g., 12"
                     />
                   </div>
@@ -1084,7 +1251,7 @@ export default function WorkoutsPage() {
                   type="button"
                   onClick={() => {
                     setShowAddForm(false);
-                    setFormData({ name: '', type: 'cardio', duration: '', caloriesBurned: '', weight: '', sets: '', reps: '', routine: '', selectedDates: [] });
+                    setFormData({ name: '', type: 'cardio', duration: '', caloriesBurned: '', weight: '', sets: '', reps: '', routine: '', selectedDates: [], muscleGroups: [] });
                     setSelectedExercise(null);
                   }}
                   className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -1165,6 +1332,18 @@ export default function WorkoutsPage() {
                             <span>🔥 {workout.caloriesBurned} cal</span>
                           )}
                         </div>
+                        {workout.muscleGroups && workout.muscleGroups.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {workout.muscleGroups.map((group, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs rounded-full"
+                              >
+                                {group}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         {(workout.weight || workout.sets || workout.reps) && (
                           <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {workout.weight && <span>💪 {workout.weight} kg</span>}

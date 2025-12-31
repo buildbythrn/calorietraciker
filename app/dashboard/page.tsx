@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { LogOut, Calendar, Target, Dumbbell, Flame, TrendingUp, Scale, Droplet, Ruler, Trophy, Settings, Utensils, CheckCircle2 } from 'lucide-react';
-import { getCalorieEntries, getHabits, calculateWorkoutStreak, getWeightEntries, getDailyWaterTotal, getGoals, getUserSettings } from '@/lib/db';
+import { getCalorieEntries, getHabits, calculateWorkoutStreak, getWeightEntries, getDailyWaterTotal, getGoals } from '@/lib/db';
 import { CalorieEntry, Habit } from '@/lib/types';
-import BodyGoalModal from '@/components/BodyGoalModal';
 import PetMascot from '@/components/mascots/PetMascot';
+import WeeklyReminderBanner from '@/components/WeeklyReminderBanner';
 
 export default function Dashboard() {
   const { user, logout, loading } = useAuth();
@@ -24,7 +24,6 @@ export default function Dashboard() {
   const [currentWeight, setCurrentWeight] = useState<number | null>(null);
   const [dailyWater, setDailyWater] = useState(0);
   const [activeGoals, setActiveGoals] = useState(0);
-  const [showBodyGoalModal, setShowBodyGoalModal] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -83,12 +82,6 @@ export default function Dashboard() {
       // Load goals
       const goals = await getGoals(user.id, true);
       setActiveGoals(goals.length);
-
-      // Check if user needs body goal (but don't force onboarding)
-      const settings = await getUserSettings(user.id);
-      if (!settings?.bodyGoal) {
-        setShowBodyGoalModal(true);
-      }
     } catch (error) {
       console.error('Error loading stats:', error);
     } finally {
@@ -132,6 +125,9 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Weekly Reminders */}
+        <WeeklyReminderBanner />
+        
         {/* Date Selector */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -291,12 +287,6 @@ export default function Dashboard() {
           )}
         </div>
       </main>
-
-      {/* Body Goal Modal */}
-      <BodyGoalModal
-        isOpen={showBodyGoalModal}
-        onClose={() => setShowBodyGoalModal(false)}
-      />
     </div>
   );
 }

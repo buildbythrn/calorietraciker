@@ -1,18 +1,29 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Poppins } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/lib/auth'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import LayoutWrapper from '@/components/LayoutWrapper'
 import PWAInstallPrompt from '@/components/PWAInstallPrompt'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const poppins = Poppins({ 
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'FitFlow',
   description: 'Your all-in-one health and fitness tracking companion',
   manifest: '/manifest.json',
-  themeColor: '#22c55e',
+  themeColor: '#F59E0B',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
@@ -31,7 +42,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${poppins.variable} font-sans`}>
         <AuthProvider>
           <ThemeProvider>
             <LayoutWrapper>

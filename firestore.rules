@@ -1,121 +1,439 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if user is authenticated
+    
+    // ============================================
+    // Helper Functions
+    // ============================================
+    
+    // Check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Helper function to check if user owns the resource
+    // Check if user owns the resource (for existing documents)
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Helper function to check if user owns the resource being created
-    function isCreatingOwner(userId) {
+    // Check if user is creating/updating with their own userId
+    function isValidUserId(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    // Validate date format (YYYY-MM-DD)
+    function isValidDate(dateString) {
+      return dateString is string && 
+             dateString.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+    
+    // Validate positive number
+    function isPositiveNumber(value) {
+      return value is number && value > 0;
+    }
+    
+    // Validate non-negative number
+    function isNonNegativeNumber(value) {
+      return value is number && value >= 0;
+    }
+    
+    // ============================================
     // Calorie Entries
+    // ============================================
     match /calorieEntries/{entryId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      // Allow read if user owns the entry
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Allow create with validation
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.food is string &&
+                       request.resource.data.calories is number &&
+                       request.resource.data.calories >= 0 &&
+                       request.resource.data.mealType is string &&
+                       request.resource.data.mealType in ['breakfast', 'lunch', 'dinner', 'snack'] &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.createdAt is timestamp;
+      
+      // Allow update if user owns it and userId doesn't change
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.food is string &&
+                       request.resource.data.calories is number &&
+                       request.resource.data.calories >= 0 &&
+                       request.resource.data.mealType is string &&
+                       request.resource.data.mealType in ['breakfast', 'lunch', 'dinner', 'snack'] &&
+                       isValidDate(request.resource.data.date);
+      
+      // Allow delete if user owns it
+      allow delete: if isAuthenticated() && 
+                        resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Habits
+    // ============================================
     match /habits/{habitId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.color is string &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.color is string;
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Habit Entries
+    // ============================================
     match /habitEntries/{entryId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.habitId is string &&
+                       request.resource.data.habitId.size() > 0 &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.completed is bool &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.habitId == resource.data.habitId &&
+                       request.resource.data.date == resource.data.date &&
+                       request.resource.data.completed is bool;
+      
+      allow delete: if isAuthenticated() && 
+                        resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Workouts
+    // ============================================
     match /workouts/{workoutId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.type is string &&
+                       request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'] &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.createdAt is timestamp &&
+                       (!('duration' in request.resource.data) || 
+                        (request.resource.data.duration is number && 
+                         request.resource.data.duration >= 0)) &&
+                       (!('caloriesBurned' in request.resource.data) || 
+                        (request.resource.data.caloriesBurned is number && 
+                         request.resource.data.caloriesBurned >= 0)) &&
+                       (!('weight' in request.resource.data) || 
+                        (request.resource.data.weight is number && 
+                         request.resource.data.weight > 0)) &&
+                       (!('sets' in request.resource.data) || 
+                        (request.resource.data.sets is number && 
+                         request.resource.data.sets > 0)) &&
+                       (!('reps' in request.resource.data) || 
+                        (request.resource.data.reps is number && 
+                         request.resource.data.reps > 0)) &&
+                       (!('muscleGroups' in request.resource.data) || 
+                        (request.resource.data.muscleGroups is list && 
+                         request.resource.data.muscleGroups.size() <= 10)) &&
+                       (!('exercise' in request.resource.data) || 
+                        request.resource.data.exercise is string);
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.type is string &&
+                       request.resource.data.type in ['cardio', 'strength', 'flexibility', 'other'] &&
+                       isValidDate(request.resource.data.date);
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Goals
+    // ============================================
     match /goals/{goalId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.type is string &&
+                       request.resource.data.type in ['calorie', 'workout', 'habit', 'weight'] &&
+                       request.resource.data.target is number &&
+                       request.resource.data.target > 0 &&
+                       request.resource.data.period is string &&
+                       request.resource.data.period in ['daily', 'weekly', 'monthly'] &&
+                       isValidDate(request.resource.data.startDate) &&
+                       request.resource.data.isActive is bool &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.type == resource.data.type &&
+                       (!('target' in request.resource.data) || 
+                        (request.resource.data.target is number && 
+                         request.resource.data.target > 0)) &&
+                       (!('isActive' in request.resource.data) || 
+                        request.resource.data.isActive is bool);
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Weight Entries
+    // ============================================
     match /weightEntries/{entryId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.weight is number &&
+                       request.resource.data.weight > 0 &&
+                       request.resource.data.weight <= 1000 &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.date == resource.data.date &&
+                       request.resource.data.weight is number &&
+                       request.resource.data.weight > 0 &&
+                       request.resource.data.weight <= 1000;
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Water Entries
+    // ============================================
     match /waterEntries/{entryId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.amount is number &&
+                       request.resource.data.amount > 0 &&
+                       request.resource.data.amount <= 10000 &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.date == resource.data.date &&
+                       request.resource.data.amount is number &&
+                       request.resource.data.amount > 0 &&
+                       request.resource.data.amount <= 10000;
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Body Measurements
+    // ============================================
     match /bodyMeasurements/{measurementId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.createdAt is timestamp &&
+                       (!('waist' in request.resource.data) || 
+                        (request.resource.data.waist is number && 
+                         request.resource.data.waist > 0 && 
+                         request.resource.data.waist <= 500)) &&
+                       (!('chest' in request.resource.data) || 
+                        (request.resource.data.chest is number && 
+                         request.resource.data.chest > 0 && 
+                         request.resource.data.chest <= 500)) &&
+                       (!('arms' in request.resource.data) || 
+                        (request.resource.data.arms is number && 
+                         request.resource.data.arms > 0 && 
+                         request.resource.data.arms <= 200)) &&
+                       (!('thighs' in request.resource.data) || 
+                        (request.resource.data.thighs is number && 
+                         request.resource.data.thighs > 0 && 
+                         request.resource.data.thighs <= 200)) &&
+                       (!('hips' in request.resource.data) || 
+                        (request.resource.data.hips is number && 
+                         request.resource.data.hips > 0 && 
+                         request.resource.data.hips <= 500)) &&
+                       (!('neck' in request.resource.data) || 
+                        (request.resource.data.neck is number && 
+                         request.resource.data.neck > 0 && 
+                         request.resource.data.neck <= 200));
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.date == resource.data.date;
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // User Settings
-    // Note: settingsId is the userId itself
+    // Document ID must match userId
+    // ============================================
     match /userSettings/{settingsId} {
-      // Allow read if authenticated and the document ID matches the user's ID
-      allow read: if isAuthenticated() && request.auth.uid == settingsId;
-      // Allow create if authenticated and the document ID matches the user's ID
-      allow create: if isAuthenticated() && request.auth.uid == settingsId && request.auth.uid == request.resource.data.userId;
-      // Allow update if authenticated and the document ID matches the user's ID
-      allow update: if isAuthenticated() && request.auth.uid == settingsId && request.auth.uid == request.resource.data.userId;
-      // Allow delete if authenticated and the document ID matches the user's ID
-      allow delete: if isAuthenticated() && request.auth.uid == settingsId;
+      // Allow read if document ID matches user's ID
+      allow read: if isAuthenticated() && 
+                     request.auth.uid == settingsId;
+      
+      // Allow create if document ID matches user's ID and userId field matches
+      allow create: if isAuthenticated() &&
+                       request.auth.uid == settingsId &&
+                       request.resource.data.userId == settingsId &&
+                       request.resource.data.userId == request.auth.uid &&
+                       (!('darkMode' in request.resource.data) || 
+                        request.resource.data.darkMode is bool) &&
+                       (!('notificationsEnabled' in request.resource.data) || 
+                        request.resource.data.notificationsEnabled is bool) &&
+                       (!('onboardingCompleted' in request.resource.data) || 
+                        request.resource.data.onboardingCompleted is bool) &&
+                       (!('bodyGoal' in request.resource.data) || 
+                        request.resource.data.bodyGoal is string) &&
+                       (!('weeklyReminders' in request.resource.data) || 
+                        request.resource.data.weeklyReminders is map) &&
+                       request.resource.data.updatedAt is timestamp;
+      
+      // Allow update if document ID matches user's ID and userId cannot be changed
+      allow update: if isAuthenticated() &&
+                       request.auth.uid == settingsId &&
+                       resource.data.userId == settingsId &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.userId == request.auth.uid &&
+                       (!('darkMode' in request.resource.data) || 
+                        request.resource.data.darkMode is bool) &&
+                       (!('notificationsEnabled' in request.resource.data) || 
+                        request.resource.data.notificationsEnabled is bool) &&
+                       (!('onboardingCompleted' in request.resource.data) || 
+                        request.resource.data.onboardingCompleted is bool) &&
+                       (!('bodyGoal' in request.resource.data) || 
+                        request.resource.data.bodyGoal is string) &&
+                       (!('weeklyReminders' in request.resource.data) || 
+                        request.resource.data.weeklyReminders is map);
+      
+      // Allow delete if document ID matches user's ID
+      allow delete: if isAuthenticated() && 
+                       request.auth.uid == settingsId;
     }
     
+    // ============================================
     // Meal Plans
+    // ============================================
     match /mealPlans/{planId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       isValidDate(request.resource.data.date) &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.date == resource.data.date;
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Workout Plans
+    // ============================================
     match /workoutPlans/{planId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0 &&
+                       request.resource.data.createdAt is timestamp;
+      
+      allow update: if isAuthenticated() &&
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId &&
+                       (!('name' in request.resource.data) || 
+                        (request.resource.data.name is string && 
+                         request.resource.data.name.size() > 0));
+      
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
     }
     
+    // ============================================
     // Achievements
+    // ============================================
     match /achievements/{achievementId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isCreatingOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId) && isCreatingOwner(request.resource.data.userId);
-      allow delete: if isOwner(resource.data.userId);
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      allow create: if isAuthenticated() &&
+                       isValidUserId(request.resource.data.userId) &&
+                       request.resource.data.userId is string &&
+                       request.resource.data.type is string &&
+                       request.resource.data.type.size() > 0 &&
+                       request.resource.data.title is string &&
+                       request.resource.data.title.size() > 0 &&
+                       request.resource.data.unlockedAt is timestamp;
+      
+      // Achievements should not be updated or deleted by users
+      // They are system-generated
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // ============================================
+    // Deny all other collections
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
-
