@@ -92,16 +92,16 @@ export default function WeightPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Weight Tracking</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Weight Tracking</h1>
           </div>
         </div>
       </header>
@@ -109,10 +109,10 @@ export default function WeightPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         {weightStats.currentWeight !== null && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-xl shadow-sm p-4">
-              <p className="text-sm text-gray-600 mb-1">Current Weight</p>
-              <p className="text-2xl font-bold text-primary-600">{weightStats.currentWeight} kg</p>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:p-4">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-1">Current Weight</p>
+              <p className="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400">{weightStats.currentWeight} kg</p>
             </div>
             <div className="bg-white rounded-xl shadow-sm p-4">
               <p className="text-sm text-gray-600 mb-1">Weight Change</p>

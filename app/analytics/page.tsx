@@ -114,27 +114,28 @@ export default function AnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Link
                 href="/dashboard"
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
               >
                 <ArrowLeft size={20} />
               </Link>
-              <div className="flex items-center gap-3">
-                <PetMascot petType="owl" size="sm" iconType="analytics" mood="happy" className="animate-float" />
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <PetMascot petType="owl" size="sm" iconType="analytics" mood="happy" className="animate-float flex-shrink-0" />
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Analytics</h1>
               </div>
             </div>
             <button
               onClick={handleExportPDF}
-              className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              className="flex items-center gap-1 sm:gap-2 bg-primary-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors flex-shrink-0 text-sm sm:text-base"
             >
-              <Download size={18} />
-              Export PDF
+              <Download size={18} className="sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Export PDF</span>
+              <span className="sm:hidden">Export</span>
             </button>
           </div>
         </div>

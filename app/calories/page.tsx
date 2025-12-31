@@ -101,15 +101,15 @@ export default function CaloriesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FitFlow</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">FitFlow</h1>
           </div>
         </div>
       </header>
@@ -129,16 +129,16 @@ export default function CaloriesPage() {
           </div>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+            className="flex items-center gap-2 bg-primary-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors w-full sm:w-auto justify-center"
           >
-            <Plus size={20} />
-            Add Entry
+            <Plus size={18} className="sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">Add Entry</span>
           </button>
         </div>
 
         {showAddForm && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add Calorie Entry</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add Calorie Entry</h2>
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

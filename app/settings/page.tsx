@@ -172,29 +172,29 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Settings</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Profile Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-              <User className="text-primary-600 dark:text-primary-400" size={32} />
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-6">
+          <div className="flex items-center gap-3 sm:gap-4 mb-6">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center flex-shrink-0">
+              <User className="text-primary-600 dark:text-primary-400 w-6 h-6 sm:w-8 sm:h-8" />
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Profile</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">Profile</h2>
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">{user.email}</p>
             </div>
           </div>
         </div>

@@ -90,60 +90,60 @@ export default function AchievementsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Achievements</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Achievements</h1>
           </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Summary */}
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-sm p-6 mb-6 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm opacity-90 mb-1">Achievement Progress</p>
-              <div className="flex items-center gap-4">
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-sm p-4 sm:p-6 mb-6 text-white">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm opacity-90 mb-1">Achievement Progress</p>
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div>
-                  <p className="text-4xl font-bold">{unlockedCount} / {totalCount}</p>
-                  <p className="text-sm opacity-90">Unlocked</p>
+                  <p className="text-2xl sm:text-4xl font-bold">{unlockedCount} / {totalCount}</p>
+                  <p className="text-xs sm:text-sm opacity-90">Unlocked</p>
                 </div>
-                <div className="w-24 h-24 relative">
-                  <svg className="transform -rotate-90 w-24 h-24">
+                <div className="w-16 h-16 sm:w-24 sm:h-24 relative flex-shrink-0">
+                  <svg className="transform -rotate-90 w-16 h-16 sm:w-24 sm:h-24">
                     <circle
-                      cx="48"
-                      cy="48"
-                      r="40"
+                      cx="32"
+                      cy="32"
+                      r="28"
                       stroke="rgba(255,255,255,0.3)"
-                      strokeWidth="8"
+                      strokeWidth="6"
                       fill="none"
                     />
                     <circle
-                      cx="48"
-                      cy="48"
-                      r="40"
+                      cx="32"
+                      cy="32"
+                      r="28"
                       stroke="white"
-                      strokeWidth="8"
+                      strokeWidth="6"
                       fill="none"
-                      strokeDasharray={`${2 * Math.PI * 40}`}
-                      strokeDashoffset={`${2 * Math.PI * 40 * (1 - completionPercentage / 100)}`}
+                      strokeDasharray={`${2 * Math.PI * 28}`}
+                      strokeDashoffset={`${2 * Math.PI * 28 * (1 - completionPercentage / 100)}`}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-2xl font-bold">{completionPercentage}%</span>
+                    <span className="text-lg sm:text-2xl font-bold">{completionPercentage}%</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <PetMascot petType="bird" size="lg" iconType="default" mood={unlockedCount > 0 ? "excited" : "happy"} className="animate-float" />
-              <Trophy size={64} className="opacity-20" />
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+              <PetMascot petType="bird" size="md" iconType="default" mood={unlockedCount > 0 ? "excited" : "happy"} className="animate-float hidden sm:block" />
+              <Trophy size={48} className="sm:w-16 sm:h-16 opacity-20" />
             </div>
           </div>
         </div>

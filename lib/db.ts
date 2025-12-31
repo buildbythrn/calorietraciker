@@ -124,17 +124,13 @@ export const toggleHabitEntry = async (habitId: string, userId: string, date: st
       await deleteDoc(entryRef);
       return false;
     } else {
-      const newEntry: HabitEntry = {
-        id: docId,
+      // Don't include 'id' in the data - it's the document ID
+      await setDoc(entryRef, {
         habitId,
         userId,
         date,
         completed: true,
-        createdAt: new Date(),
-      };
-      await setDoc(entryRef, {
-        ...newEntry,
-        createdAt: Timestamp.fromDate(newEntry.createdAt),
+        createdAt: Timestamp.fromDate(new Date()),
       });
       return true;
     }

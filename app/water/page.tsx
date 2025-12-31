@@ -83,18 +83,18 @@ export default function WaterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <div className="flex items-center gap-3">
-              <PetMascot petType="fish" size="sm" iconType="water" mood="happy" className="animate-float" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Water Intake</h1>
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <PetMascot petType="fish" size="sm" iconType="water" mood="happy" className="animate-float flex-shrink-0" />
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Water Intake</h1>
             </div>
           </div>
         </div>
@@ -115,35 +115,35 @@ export default function WaterPage() {
         </div>
 
         {/* Progress Circle */}
-        <div className="bg-white rounded-xl shadow-sm p-8 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sm:p-8 mb-6">
           <div className="flex flex-col items-center">
-            <div className="relative w-48 h-48 mb-6">
-              <svg className="transform -rotate-90 w-48 h-48">
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48 mb-6">
+              <svg className="transform -rotate-90 w-40 h-40 sm:w-48 sm:h-48">
                 <circle
-                  cx="96"
-                  cy="96"
-                  r="80"
+                  cx="80"
+                  cy="80"
+                  r="64"
                   stroke="currentColor"
-                  strokeWidth="12"
+                  strokeWidth="10"
                   fill="none"
-                  className="text-gray-200"
+                  className="text-gray-200 dark:text-gray-700"
                 />
                 <circle
-                  cx="96"
-                  cy="96"
-                  r="80"
+                  cx="80"
+                  cy="80"
+                  r="64"
                   stroke="currentColor"
-                  strokeWidth="12"
+                  strokeWidth="10"
                   fill="none"
-                  strokeDasharray={`${2 * Math.PI * 80}`}
-                  strokeDashoffset={`${2 * Math.PI * 80 * (1 - progressPercentage / 100)}`}
-                  className="text-blue-500 transition-all duration-300"
+                  strokeDasharray={`${2 * Math.PI * 64}`}
+                  strokeDashoffset={`${2 * Math.PI * 64 * (1 - progressPercentage / 100)}`}
+                  className="text-blue-500 dark:text-blue-400 transition-all duration-300"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <Droplet className="text-blue-500 dark:text-blue-400 mb-2" size={32} />
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">{dailyTotal}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">ml / {waterGoal} ml</p>
+                <Droplet className="text-blue-500 dark:text-blue-400 mb-1 sm:mb-2 w-6 h-6 sm:w-8 sm:h-8" />
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{dailyTotal}</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">ml / {waterGoal} ml</p>
               </div>
             </div>
             <div className="w-full max-w-md">

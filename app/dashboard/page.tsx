@@ -106,17 +106,17 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <PetMascot petType="panda" size="sm" iconType="default" mood="happy" className="animate-float" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <PetMascot petType="panda" size="sm" iconType="default" mood="happy" className="animate-float flex-shrink-0" />
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Dashboard</h1>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="flex items-center gap-1 sm:gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-2 sm:px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex-shrink-0"
             >
-              <LogOut size={20} />
+              <LogOut size={18} className="sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
@@ -142,14 +142,14 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-          <Link href="/calories" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Calories</p>
-                <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">{totalCalories}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Link href="/calories" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:p-4 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 truncate">Calories</p>
+                <p className="text-xl sm:text-2xl font-bold text-primary-600 dark:text-primary-400">{totalCalories}</p>
               </div>
-              <Calendar className="text-primary-600" size={20} />
+              <Calendar className="text-primary-600 dark:text-primary-400 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             </div>
           </Link>
 
@@ -230,10 +230,10 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Link href="/analytics" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow text-center">
-            <TrendingUp className="text-indigo-600 mx-auto mb-2" size={24} />
-            <p className="text-sm font-medium text-gray-900 dark:text-white">Analytics</p>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <Link href="/analytics" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-3 sm:p-4 hover:shadow-md transition-shadow text-center">
+            <TrendingUp className="text-indigo-600 dark:text-indigo-400 mx-auto mb-2 w-5 h-5 sm:w-6 sm:h-6" />
+            <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">Analytics</p>
           </Link>
           <Link href="/meal-planning" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow text-center">
             <Utensils className="text-orange-600 mx-auto mb-2" size={24} />
@@ -250,8 +250,8 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Calories */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Today's Calories</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-white">Today's Calories</h2>
           {loadingCalories ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>

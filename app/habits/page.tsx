@@ -144,15 +144,15 @@ export default function HabitsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/dashboard"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Habit Tracker</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Habit Tracker</h1>
           </div>
         </div>
       </header>
@@ -172,16 +172,16 @@ export default function HabitsPage() {
           </div>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+            className="flex items-center gap-2 bg-primary-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors w-full sm:w-auto justify-center"
           >
-            <Plus size={20} />
-            Add Habit
+            <Plus size={18} className="sm:w-5 sm:h-5" />
+            <span className="text-sm sm:text-base">Add Habit</span>
           </button>
         </div>
 
         {showAddForm && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add New Habit</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 mb-6">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-900 dark:text-white">Add New Habit</h2>
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -225,10 +225,10 @@ export default function HabitsPage() {
                   ))}
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   type="submit"
-                  className="flex-1 bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                  className="flex-1 bg-primary-600 text-white py-2 rounded-lg hover:bg-primary-700 transition-colors order-2 sm:order-1"
                 >
                   Add Habit
                 </button>
@@ -238,7 +238,7 @@ export default function HabitsPage() {
                     setShowAddForm(false);
                     setFormData({ name: '', description: '', color: 'bg-blue-500' });
                   }}
-                  className="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors"
+                  className="px-4 sm:px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300 transition-colors order-1 sm:order-2"
                 >
                   Cancel
                 </button>
@@ -252,7 +252,7 @@ export default function HabitsPage() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
           </div>
         ) : habits.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 sm:p-12 text-center">
             <div className="flex justify-center mb-4">
               <PetMascot petType="bunny" size="md" iconType="default" mood="happy" className="animate-float" />
             </div>
@@ -260,7 +260,7 @@ export default function HabitsPage() {
             <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Create your first habit to start tracking!</p>
             <button
               onClick={() => setShowAddForm(true)}
-              className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              className="bg-primary-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm sm:text-base"
             >
               Add Your First Habit
             </button>
@@ -274,52 +274,52 @@ export default function HabitsPage() {
               return (
                 <div
                   key={habit.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div className={`w-12 h-12 ${habit.color} rounded-lg flex items-center justify-center`}>
+                  <div className="flex items-start justify-between mb-4 gap-2">
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 ${habit.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
                         {completed ? (
-                          <CheckCircle2 className="text-white" size={24} />
+                          <CheckCircle2 className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                         ) : (
-                          <div className="w-6 h-6 border-2 border-white rounded"></div>
+                          <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white rounded"></div>
                         )}
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold mb-1 text-gray-900 dark:text-white">{habit.name}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-lg sm:text-xl font-semibold mb-1 text-gray-900 dark:text-white break-words">{habit.name}</h3>
                         {habit.description && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{habit.description}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 break-words">{habit.description}</p>
                         )}
                       </div>
                     </div>
                     <button
                       onClick={() => handleDelete(habit.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex-shrink-0"
                     >
                       <Trash2 size={18} />
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-4 sm:gap-6">
                       <div className="flex items-center gap-2">
-                        <Flame className="text-orange-500" size={20} />
+                        <Flame className="text-orange-500 dark:text-orange-400 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400">Current Streak</p>
-                          <p className="font-bold text-lg text-gray-900 dark:text-white">{streak.current} days</p>
+                          <p className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">{streak.current} days</p>
                         </div>
                       </div>
                       <div>
                         <p className="text-xs text-gray-600 dark:text-gray-400">Longest Streak</p>
-                        <p className="font-bold text-lg text-gray-900 dark:text-white">{streak.longest} days</p>
+                        <p className="font-bold text-base sm:text-lg text-gray-900 dark:text-white">{streak.longest} days</p>
                       </div>
                     </div>
                     <button
                       onClick={() => handleToggle(habit.id)}
-                      className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                      className={`px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm sm:text-base transition-colors whitespace-nowrap ${
                         completed
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
                       {completed ? 'Completed ✓' : 'Mark Complete'}

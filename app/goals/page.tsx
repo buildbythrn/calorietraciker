@@ -208,19 +208,19 @@ export default function GoalsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Link
                 href="/dashboard"
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
               >
                 <ArrowLeft size={20} />
               </Link>
-              <div className="flex items-center gap-3">
-                <PetMascot petType="bunny" size="sm" iconType="goal" mood="excited" className="animate-float" />
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Goals</h1>
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <PetMascot petType="bunny" size="sm" iconType="goal" mood="excited" className="animate-float flex-shrink-0" />
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Goals</h1>
               </div>
             </div>
             <button
@@ -235,10 +235,11 @@ export default function GoalsPage() {
                   endDate: '',
                 });
               }}
-              className="flex items-center gap-2 bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              className="flex items-center gap-2 bg-primary-600 text-white px-3 sm:px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors flex-shrink-0 text-sm sm:text-base"
             >
-              <Plus size={20} />
-              Add Goal
+              <Plus size={18} className="sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Add Goal</span>
+              <span className="sm:hidden">Add</span>
             </button>
           </div>
         </div>
