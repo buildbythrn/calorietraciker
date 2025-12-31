@@ -473,7 +473,419 @@ body {
   animation: button-pulse 2s ease-in-out infinite;
 }
 
-/* Specialized Mascot Styles */
+/* Pet Mascot Styles - Unified Theme */
+@keyframes pet-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pet-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pet-wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes pet-happy {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes pet-hungry {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(0.95) translateY(2px);
+  }
+}
+
+@keyframes bubble-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1);
+  }
+}
+
+.pet-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pet-enter {
+  animation: pet-enter 0.6s ease-out;
+}
+
+.pet-container {
+  animation: pet-bounce 2s ease-in-out infinite;
+}
+
+.pet-mood-happy {
+  animation: pet-happy 1.5s ease-in-out infinite;
+}
+
+.pet-mood-hungry {
+  animation: pet-hungry 1.2s ease-in-out infinite;
+}
+
+.pet-mood-excited {
+  animation: pet-bounce 1s ease-in-out infinite;
+}
+
+.pet-body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-head {
+  width: 60%;
+  height: 50%;
+  border-radius: 50% 50% 45% 45%;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+}
+
+.pet-face {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 25%;
+}
+
+/* Ears */
+.pet-ear {
+  position: absolute;
+  width: 20%;
+  height: 30%;
+  border-radius: 50% 50% 0 0;
+  top: -15%;
+  z-index: 1;
+}
+
+.pet-ear-left {
+  left: 15%;
+}
+
+.pet-ear-right {
+  right: 15%;
+}
+
+.pet-ear.floppy {
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-20deg);
+}
+
+.pet-ear.long {
+  height: 50%;
+  top: -30%;
+  border-radius: 50% 50% 0 0;
+}
+
+.pet-ear.round {
+  width: 18%;
+  height: 25%;
+  border-radius: 50%;
+}
+
+.pet-ear.feathers {
+  width: 15%;
+  height: 35%;
+  border-radius: 0 0 50% 50%;
+  top: -20%;
+}
+
+/* Eyes */
+.pet-eyes {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  z-index: 2;
+}
+
+.pet-eye {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  position: relative;
+  animation: eye-blink 3s ease-in-out infinite;
+}
+
+.pet-eye.large {
+  width: 16px;
+  height: 16px;
+}
+
+.pet-eye::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #1e40af;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pet-eye.large::after {
+  width: 10px;
+  height: 10px;
+}
+
+/* Snout */
+.pet-snout {
+  width: 20px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 4px;
+  position: relative;
+}
+
+.pet-snout::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 50% 50%;
+}
+
+/* Beak */
+.pet-beak {
+  width: 16px;
+  height: 10px;
+  border-radius: 0 0 50% 50%;
+  margin-top: 4px;
+  position: relative;
+  transform: rotate(180deg);
+}
+
+/* Whiskers */
+.pet-whisker {
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+}
+
+.pet-whisker-left-1 {
+  top: 40%;
+  left: -15%;
+  transform: rotate(-10deg);
+}
+
+.pet-whisker-left-2 {
+  top: 50%;
+  left: -15%;
+  transform: rotate(10deg);
+}
+
+.pet-whisker-right-1 {
+  top: 40%;
+  right: -15%;
+  transform: rotate(10deg);
+}
+
+.pet-whisker-right-2 {
+  top: 50%;
+  right: -15%;
+  transform: rotate(-10deg);
+}
+
+/* Smile */
+.pet-smile {
+  width: 24px;
+  height: 12px;
+  border: 3px solid white;
+  border-top: none;
+  border-radius: 0 0 24px 24px;
+  margin-top: 4px;
+}
+
+/* Panda Patches */
+.panda-patch {
+  position: absolute;
+  width: 25%;
+  height: 30%;
+  background: #1f2937;
+  border-radius: 50%;
+  top: 15%;
+}
+
+.panda-patch-left {
+  left: 10%;
+}
+
+.panda-patch-right {
+  right: 10%;
+}
+
+/* Torso */
+.pet-torso {
+  width: 70%;
+  height: 50%;
+  border-radius: 20px 20px 10px 10px;
+  margin-top: -5%;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.pet-icon-container {
+  position: absolute;
+  z-index: 2;
+}
+
+.pet-icon {
+  animation: icon-pulse 2s ease-in-out infinite;
+}
+
+/* Wings */
+.pet-wing {
+  position: absolute;
+  width: 30%;
+  height: 40%;
+  border-radius: 50% 0 50% 50%;
+  z-index: 0;
+}
+
+.pet-wing-left {
+  left: -10%;
+  top: 20%;
+  transform: rotate(-20deg);
+}
+
+.pet-wing-right {
+  right: -10%;
+  top: 20%;
+  transform: rotate(20deg) scaleX(-1);
+}
+
+/* Fins */
+.pet-fin {
+  position: absolute;
+  width: 25%;
+  height: 30%;
+  border-radius: 0 50% 50% 0;
+  z-index: 0;
+}
+
+.pet-fin-top {
+  top: -10%;
+  right: -5%;
+  transform: rotate(-45deg);
+}
+
+.pet-fin-bottom {
+  bottom: -10%;
+  right: -5%;
+  transform: rotate(45deg);
+}
+
+/* Tail */
+.pet-tail {
+  position: absolute;
+  width: 15%;
+  height: 25%;
+  border-radius: 50% 0 0 50%;
+  right: -8%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+  animation: pet-wiggle 2s ease-in-out infinite;
+}
+
+.pet-tail.fluffy {
+  width: 20%;
+  height: 30%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Bubbles */
+.pet-bubble {
+  position: absolute;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+  animation: bubble-float 3s ease-out infinite;
+}
+
+.pet-bubble-1 {
+  width: 12px;
+  height: 12px;
+  top: 20%;
+  right: -15%;
+  animation-delay: 0s;
+}
+
+.pet-bubble-2 {
+  width: 8px;
+  height: 8px;
+  top: 40%;
+  right: -10%;
+  animation-delay: 1s;
+}
+
+.pet-bubble-3 {
+  width: 6px;
+  height: 6px;
+  top: 60%;
+  right: -12%;
+  animation-delay: 2s;
+}
+
+/* Specialized Mascot Styles (Old - to be removed) */
 
 /* Chef Mascot */
 .chef-mascot {

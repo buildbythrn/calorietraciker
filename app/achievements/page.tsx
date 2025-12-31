@@ -9,7 +9,7 @@ import { getAchievements } from '@/lib/db';
 import { checkAchievements, ACHIEVEMENT_DEFINITIONS, getAchievementProgress } from '@/lib/achievements';
 import { Achievement, AchievementDefinition } from '@/lib/types';
 import AchievementBadge from '@/components/AchievementBadge';
-import FitFlowMascot from '@/components/FitFlowMascot';
+import PetMascot from '@/components/mascots/PetMascot';
 
 export default function AchievementsPage() {
   const { user, loading } = useAuth();
@@ -142,7 +142,7 @@ export default function AchievementsPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <FitFlowMascot variant={unlockedCount > 0 ? "celebrate" : "encourage"} size="lg" className="animate-float" />
+              <PetMascot petType="bird" size="lg" iconType="default" mood={unlockedCount > 0 ? "excited" : "happy"} className="animate-float" />
               <Trophy size={64} className="opacity-20" />
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function AchievementsPage() {
         {newUnlocks.length > 0 && (
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 rounded-xl p-4 mb-6">
             <div className="flex items-center gap-3">
-              <FitFlowMascot variant="celebrate" size="md" className="animate-float" />
+              <PetMascot petType="bird" size="md" iconType="default" mood="excited" className="animate-float" />
               <div className="flex items-center gap-2 flex-1">
                 <Sparkles className="text-yellow-600 dark:text-yellow-400" size={20} />
                 <p className="font-semibold text-yellow-900 dark:text-yellow-200">

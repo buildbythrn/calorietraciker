@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft, Plus, Droplet } from 'lucide-react';
 import { addWaterEntry, getWaterEntries, getDailyWaterTotal, deleteWaterEntry } from '@/lib/db';
 import { WaterEntry } from '@/lib/types';
-import HydrationMascot from '@/components/mascots/HydrationMascot';
+import PetMascot from '@/components/mascots/PetMascot';
 
 export default function WaterPage() {
   const { user, loading } = useAuth();
@@ -93,7 +93,7 @@ export default function WaterPage() {
               <ArrowLeft size={20} />
             </Link>
             <div className="flex items-center gap-3">
-              <HydrationMascot size="sm" className="animate-float" />
+              <PetMascot petType="fish" size="sm" iconType="water" mood="happy" className="animate-float" />
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Water Intake</h1>
             </div>
           </div>
@@ -250,7 +250,7 @@ export default function WaterPage() {
           ) : waterEntries.length === 0 ? (
             <div className="text-center py-12 text-gray-500 dark:text-gray-400">
               <div className="flex justify-center mb-4">
-                <HydrationMascot size="md" className="animate-float" />
+                <PetMascot petType="fish" size="md" iconType="water" mood="hungry" className="animate-float" />
               </div>
               <p className="mb-2">No water logged for this date.</p>
               <p className="text-sm">Use the quick add buttons above to track your water intake!</p>

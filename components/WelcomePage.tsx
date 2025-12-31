@@ -3,24 +3,22 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Calendar, Target, Dumbbell, Flame, TrendingUp, Smartphone, Zap, Shield, Heart, Brain, TrendingDown, Apple, Droplet, CheckCircle2, XCircle } from 'lucide-react';
-import FitFlowMascot from './FitFlowMascot';
+import PetMascot from './mascots/PetMascot';
 
 export default function WelcomePage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const [heroMascotVariant, setHeroMascotVariant] = useState<'default' | 'celebrate' | 'wave' | 'workout' | 'encourage'>('wave');
-  const [featureMascotVariant, setFeatureMascotVariant] = useState<'default' | 'celebrate' | 'wave' | 'workout' | 'encourage'>('encourage');
-  const [ctaMascotVariant, setCtaMascotVariant] = useState<'default' | 'celebrate' | 'wave' | 'workout' | 'encourage'>('celebrate');
+  const [heroPetMood, setHeroPetMood] = useState<'happy' | 'excited' | 'hungry'>('happy');
 
   useEffect(() => {
     setMounted(true);
     
-    // Cycle through mascot animations
+    // Cycle through pet moods
     const heroInterval = setInterval(() => {
-      setHeroMascotVariant(prev => {
-        const variants: Array<'default' | 'celebrate' | 'wave' | 'workout' | 'encourage'> = ['wave', 'default', 'encourage'];
-        const currentIndex = variants.indexOf(prev);
-        return variants[(currentIndex + 1) % variants.length];
+      setHeroPetMood(prev => {
+        const moods: Array<'happy' | 'excited' | 'hungry'> = ['happy', 'excited', 'hungry'];
+        const currentIndex = moods.indexOf(prev);
+        return moods[(currentIndex + 1) % moods.length];
       });
     }, 4000);
 
@@ -99,7 +97,7 @@ export default function WelcomePage() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Mascot in Hero */}
           <div className={`flex justify-center mb-8 ${mounted ? 'animate-fade-in-up' : 'opacity-0'}`}>
-            <FitFlowMascot variant={heroMascotVariant} size="lg" className="animate-float" />
+            <PetMascot petType="panda" size="lg" iconType="default" mood={heroPetMood} className="animate-float" />
           </div>
           
           <h2 className={`text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 ${mounted ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
@@ -135,7 +133,7 @@ export default function WelcomePage() {
         <div className="text-center mb-16">
           {/* Mascot in Features Section */}
           <div className="flex justify-center mb-6">
-            <FitFlowMascot variant={featureMascotVariant} size="md" className="animate-float" />
+            <PetMascot petType="dog" size="md" iconType="food" mood="happy" className="animate-float" />
           </div>
           <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up">
             Everything You Need to Succeed
@@ -171,7 +169,7 @@ export default function WelcomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <div className="flex justify-center mb-6">
-                <FitFlowMascot variant="workout" size="md" className="animate-float" />
+                <PetMascot petType="cat" size="md" iconType="workout" mood="energetic" className="animate-float" />
               </div>
               <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up">
                 💪 Understanding Your Fitness Journey
@@ -306,7 +304,7 @@ export default function WelcomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           {/* Mascot in CTA */}
           <div className="flex justify-center mb-6">
-            <FitFlowMascot variant={ctaMascotVariant} size="lg" className="animate-float" />
+            <PetMascot petType="panda" size="lg" iconType="default" mood="excited" className="animate-float" />
           </div>
           
           <h3 className="text-3xl sm:text-4xl font-bold text-white mb-4 animate-fade-in-up">

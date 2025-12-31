@@ -27,6 +27,7 @@ import HabitChart from '@/components/charts/HabitChart';
 import WeightChart from '@/components/charts/WeightChart';
 import ProgressChart from '@/components/charts/ProgressChart';
 import { exportToPDF } from '@/lib/export';
+import PetMascot from '@/components/mascots/PetMascot';
 
 export default function AnalyticsPage() {
   const { user, loading } = useAuth();
@@ -124,7 +125,7 @@ export default function AnalyticsPage() {
                 <ArrowLeft size={20} />
               </Link>
               <div className="flex items-center gap-3">
-                <AnalyticsMascot size="sm" className="animate-float" />
+                <PetMascot petType="owl" size="sm" iconType="analytics" mood="happy" className="animate-float" />
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
               </div>
             </div>

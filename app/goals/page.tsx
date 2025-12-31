@@ -11,7 +11,7 @@ import { getCalorieEntries, getWorkouts, getHabits, getHabitEntries } from '@/li
 import { Goal } from '@/lib/types';
 import GoalCard from '@/components/GoalCard';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
-import CoachMascot from '@/components/mascots/CoachMascot';
+import PetMascot from '@/components/mascots/PetMascot';
 
 export default function GoalsPage() {
   const { user, loading } = useAuth();
@@ -219,7 +219,7 @@ export default function GoalsPage() {
                 <ArrowLeft size={20} />
               </Link>
               <div className="flex items-center gap-3">
-                <CoachMascot variant="goal" size="sm" className="animate-float" />
+                <PetMascot petType="bunny" size="sm" iconType="goal" mood="excited" className="animate-float" />
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Goals</h1>
               </div>
             </div>
@@ -354,7 +354,7 @@ export default function GoalsPage() {
         ) : goals.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
             <div className="flex justify-center mb-4">
-              <CoachMascot variant="goal" size="md" className="animate-float" />
+              <PetMascot petType="bunny" size="md" iconType="goal" mood="hungry" className="animate-float" />
             </div>
             <p className="text-gray-500 dark:text-gray-400 mb-2">No goals set yet.</p>
             <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Create your first goal to start tracking your progress!</p>

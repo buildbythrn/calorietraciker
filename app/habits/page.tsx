@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft, Plus, Trash2, Flame, CheckCircle2 } from 'lucide-react';
 import { getHabits, addHabit, deleteHabit, getHabitEntries, toggleHabitEntry, calculateHabitStreak } from '@/lib/db';
 import { Habit, HabitEntry, Streak } from '@/lib/types';
-import CoachMascot from '@/components/mascots/CoachMascot';
+import PetMascot from '@/components/mascots/PetMascot';
 
 const habitColors = [
   { name: 'Blue', value: 'bg-blue-500' },
@@ -254,7 +254,7 @@ export default function HabitsPage() {
         ) : habits.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
             <div className="flex justify-center mb-4">
-              <CoachMascot variant="encourage" size="md" className="animate-float" />
+              <PetMascot petType="bunny" size="md" iconType="default" mood="happy" className="animate-float" />
             </div>
             <p className="text-gray-500 dark:text-gray-400 mb-4">No habits yet.</p>
             <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Create your first habit to start tracking!</p>

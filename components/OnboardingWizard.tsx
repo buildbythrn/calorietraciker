@@ -5,7 +5,7 @@ import { X, ChevronRight, ChevronLeft, User, Target, Calculator, Sparkles, Arrow
 import { useAuth } from '@/lib/auth';
 import { getUserSettings, updateUserSettings, addWeightEntry } from '@/lib/db';
 import { calculateBMR, calculateTDEE, calculateCalorieTarget, feetInchesToCm, lbsToKg, UserProfile } from '@/lib/calculations';
-import FitFlowMascot from './FitFlowMascot';
+import PetMascot from './mascots/PetMascot';
 import { useRouter } from 'next/navigation';
 
 interface OnboardingWizardProps {
@@ -151,7 +151,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
-            <FitFlowMascot variant="encourage" size="sm" className="animate-float" />
+            <PetMascot petType="panda" size="sm" iconType="default" mood="happy" className="animate-float" />
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to FitFlow!</h2>
               <p className="text-sm text-gray-600 dark:text-gray-400">Step {currentStep + 1} of {steps.length}</p>
@@ -187,7 +187,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
           {currentStep === 0 && (
             <div className="text-center py-8">
               <div className="flex justify-center mb-6">
-                <FitFlowMascot variant="wave" size="lg" className="animate-float" />
+                <PetMascot petType="panda" size="lg" iconType="default" mood="excited" className="animate-float" />
               </div>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Let's Get Started!
@@ -299,7 +299,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
                           value={displayHeight ? Math.floor(displayHeight / 12) : ''}
                           onChange={(e) => {
                             const feet = parseInt(e.target.value) || 0;
-                            const inches = displayHeight % 12;
+                            const inches = (displayHeight || 0) % 12;
                             updateHeight(feet * 12 + inches);
                           }}
                           className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
@@ -313,7 +313,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
                           value={displayHeight ? displayHeight % 12 : ''}
                           onChange={(e) => {
                             const inches = parseInt(e.target.value) || 0;
-                            const feet = Math.floor(displayHeight / 12);
+                            const feet = Math.floor((displayHeight || 0) / 12);
                             updateHeight(feet * 12 + inches);
                           }}
                           className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
@@ -487,7 +487,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
           {currentStep === 5 && (
             <div className="text-center py-8">
               <div className="flex justify-center mb-6">
-                <FitFlowMascot variant="celebrate" size="lg" className="animate-float" />
+                <PetMascot petType="panda" size="lg" iconType="default" mood="excited" className="animate-float" />
               </div>
               <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 You're All Set! 🎉
