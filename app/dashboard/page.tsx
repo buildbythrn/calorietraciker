@@ -84,14 +84,8 @@ export default function Dashboard() {
       const goals = await getGoals(user.id, true);
       setActiveGoals(goals.length);
 
-      // Check if user needs onboarding - redirect to onboarding page instead
+      // Check if user needs body goal (but don't force onboarding)
       const settings = await getUserSettings(user.id);
-      if (!settings?.onboardingCompleted) {
-        router.push('/onboarding');
-        return;
-      }
-      
-      // Only show body goal modal if onboarding is complete but goal not set
       if (!settings?.bodyGoal) {
         setShowBodyGoalModal(true);
       }

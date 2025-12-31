@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 interface OnboardingWizardProps {
   isOpen: boolean;
   onComplete: () => void;
+  onSkip?: () => void;
 }
 
 const activityLevels = [
@@ -29,7 +30,7 @@ const bodyGoals = [
   { id: 'body_recomposition' as const, title: 'Body Recomposition', description: 'Lose fat and gain muscle' },
 ];
 
-export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizardProps) {
+export default function OnboardingWizard({ isOpen, onComplete, onSkip }: OnboardingWizardProps) {
   const { user } = useAuth();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
@@ -125,6 +126,24 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
     }
   };
 
+  const handleSkip = async () => {
+    if (!user) {
+      onSkip?.();
+      return;
+    }
+
+    try {
+      // Mark onboarding as skipped (completed = true but with no data)
+      await updateUserSettings(user.id, {
+        onboardingCompleted: true,
+      });
+      onSkip?.();
+    } catch (error) {
+      console.error('Error skipping onboarding:', error);
+      onSkip?.();
+    }
+  };
+
   const updateHeight = (value: number) => {
     if (useMetric) {
       setProfile({ ...profile, height: value });
@@ -158,7 +177,7 @@ export default function OnboardingWizard({ isOpen, onComplete }: OnboardingWizar
             </div>
           </div>
           <button
-            onClick={onComplete}
+            onClick={handleSkip}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <X size={24} className="text-gray-600 dark:text-gray-400" />

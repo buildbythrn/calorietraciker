@@ -11,27 +11,9 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading && user) {
-      // Check if user needs onboarding first
-      checkOnboardingAndRedirect();
+      router.push('/dashboard');
     }
   }, [user, loading, router]);
-
-  const checkOnboardingAndRedirect = async () => {
-    if (!user) return;
-    
-    try {
-      const { getUserSettings } = await import('@/lib/db');
-      const settings = await getUserSettings(user.id);
-      if (!settings?.onboardingCompleted) {
-        router.push('/onboarding');
-      } else {
-        router.push('/dashboard');
-      }
-    } catch (error) {
-      // On error, try onboarding first
-      router.push('/onboarding');
-    }
-  };
 
   if (loading) {
     return (

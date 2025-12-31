@@ -48,6 +48,10 @@ export default function OnboardingPage() {
     router.push('/dashboard');
   };
 
+  const handleSkip = () => {
+    router.push('/dashboard');
+  };
+
   if (loading || checkingOnboarding) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -65,6 +69,7 @@ export default function OnboardingPage() {
       <OnboardingWizard
         isOpen={showOnboarding}
         onComplete={handleComplete}
+        onSkip={handleSkip}
       />
     </div>
   );
