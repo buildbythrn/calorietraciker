@@ -641,6 +641,9 @@ export const getUserSettings = async (userId: string): Promise<UserSettings> => 
     darkMode: data.darkMode || false,
     notificationsEnabled: data.notificationsEnabled || false,
     bodyGoal: data.bodyGoal,
+    profile: data.profile,
+    dailyCalorieTarget: data.dailyCalorieTarget,
+    onboardingCompleted: data.onboardingCompleted || false,
     reminderTimes: data.reminderTimes || {},
     units: data.units || {
       weight: 'kg',

@@ -123,7 +123,10 @@ export default function AnalyticsPage() {
               >
                 <ArrowLeft size={20} />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+              <div className="flex items-center gap-3">
+                <AnalyticsMascot size="sm" className="animate-float" />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+              </div>
             </div>
             <button
               onClick={handleExportPDF}

@@ -169,6 +169,18 @@ export interface UserSettings {
   darkMode: boolean;
   notificationsEnabled: boolean;
   bodyGoal?: 'fat_loss' | 'weight_loss' | 'muscle_gain' | 'maintain' | 'body_recomposition';
+  // Profile information for calorie calculations
+  profile?: {
+    age?: number;
+    gender?: 'male' | 'female';
+    height?: number; // in cm
+    weight?: number; // in kg
+    activityLevel?: 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active';
+  };
+  // Daily calorie target
+  dailyCalorieTarget?: number;
+  // Onboarding completion
+  onboardingCompleted?: boolean;
   reminderTimes: {
     meals?: string[]; // HH:mm format
     workouts?: string[];

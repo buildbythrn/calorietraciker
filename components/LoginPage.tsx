@@ -26,7 +26,7 @@ export default function LoginPage() {
       } else {
         await signup(email, password);
       }
-      router.push('/dashboard');
+      // The login route page will handle the redirect based on onboarding status
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {

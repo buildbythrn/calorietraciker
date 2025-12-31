@@ -10,7 +10,7 @@ import { getWorkouts, addWorkout, deleteWorkout, calculateWorkoutStreak, getUser
 import { Workout, Streak, WorkoutRoutine } from '@/lib/types';
 import ExerciseSearch from '@/components/ExerciseSearch';
 import { Exercise, calculateCaloriesBurned } from '@/lib/exerciseApi';
-import FitFlowMascot from '@/components/FitFlowMascot';
+import TrainerMascot from '@/components/mascots/TrainerMascot';
 
 interface DayWorkouts {
   date: string;
@@ -302,10 +302,10 @@ export default function WorkoutsPage() {
             >
               <ArrowLeft size={20} />
             </Link>
-            <div className="flex items-center gap-3">
-              <FitFlowMascot variant="workout" size="sm" className="animate-float" />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Workout Tracker</h1>
-            </div>
+              <div className="flex items-center gap-3">
+                <TrainerMascot variant="default" size="sm" className="animate-float" />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Workout Tracker</h1>
+              </div>
           </div>
         </div>
       </header>
@@ -331,7 +331,7 @@ export default function WorkoutsPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <FitFlowMascot variant={streak.current > 0 ? "celebrate" : "workout"} size="lg" className="animate-float" />
+              <TrainerMascot variant={streak.current > 0 ? "celebrate" : "default"} size="lg" className="animate-float" />
               <Dumbbell size={48} className="opacity-20" />
             </div>
           </div>
@@ -441,7 +441,7 @@ export default function WorkoutsPage() {
             {savedRoutines.length === 0 ? (
               <div className="text-center py-8">
                 <div className="flex justify-center mb-4">
-                  <FitFlowMascot variant="encourage" size="md" className="animate-float" />
+                  <TrainerMascot variant="motivate" size="md" className="animate-float" />
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 mb-2">No routines saved yet.</p>
                 <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">
@@ -1104,7 +1104,7 @@ export default function WorkoutsPage() {
         ) : workoutsByDay.length === 0 ? (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
             <div className="flex justify-center mb-4">
-              <FitFlowMascot variant="workout" size="md" className="animate-float" />
+              <TrainerMascot variant="default" size="md" className="animate-float" />
             </div>
             <p className="text-gray-500 dark:text-gray-400 mb-2">No workouts logged yet.</p>
             <p className="text-sm text-gray-400 dark:text-gray-500">Click "Add Workout" to get started!</p>
