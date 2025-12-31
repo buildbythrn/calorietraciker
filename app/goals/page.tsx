@@ -11,6 +11,7 @@ import { getCalorieEntries, getWorkouts, getHabits, getHabitEntries } from '@/li
 import { Goal } from '@/lib/types';
 import GoalCard from '@/components/GoalCard';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
+import FitFlowMascot from '@/components/FitFlowMascot';
 
 export default function GoalsPage() {
   const { user, loading } = useAuth();
@@ -217,7 +218,10 @@ export default function GoalsPage() {
               >
                 <ArrowLeft size={20} />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Goals</h1>
+              <div className="flex items-center gap-3">
+                <FitFlowMascot variant="encourage" size="sm" className="animate-float" />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Goals</h1>
+              </div>
             </div>
             <button
               onClick={() => {
@@ -348,10 +352,12 @@ export default function GoalsPage() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
           </div>
         ) : goals.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-            <Target size={48} className="mx-auto mb-4 text-gray-300" />
-            <p className="text-gray-500 mb-2">No goals set yet.</p>
-            <p className="text-sm text-gray-400 mb-6">Create your first goal to start tracking your progress!</p>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+            <div className="flex justify-center mb-4">
+              <FitFlowMascot variant="encourage" size="md" className="animate-float" />
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 mb-2">No goals set yet.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Create your first goal to start tracking your progress!</p>
             <button
               onClick={() => setShowAddForm(true)}
               className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"

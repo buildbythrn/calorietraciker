@@ -10,6 +10,7 @@ import { getCalorieEntries, addCalorieEntry, deleteCalorieEntry } from '@/lib/db
 import FoodSearch from '@/components/FoodSearch';
 import { FoodItem } from '@/lib/foodApi';
 import { CalorieEntry } from '@/lib/types';
+import FitFlowMascot from '@/components/FitFlowMascot';
 
 export default function CaloriesPage() {
   const { user, loading } = useAuth();
@@ -256,6 +257,9 @@ export default function CaloriesPage() {
             </div>
           ) : calories.length === 0 ? (
             <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              <div className="flex justify-center mb-4">
+                <FitFlowMascot variant="encourage" size="md" className="animate-float" />
+              </div>
               <p className="mb-2">No entries for this date.</p>
               <p className="text-sm">Click "Add Entry" to get started!</p>
             </div>

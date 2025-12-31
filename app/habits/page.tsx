@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft, Plus, Trash2, Flame, CheckCircle2 } from 'lucide-react';
 import { getHabits, addHabit, deleteHabit, getHabitEntries, toggleHabitEntry, calculateHabitStreak } from '@/lib/db';
 import { Habit, HabitEntry, Streak } from '@/lib/types';
+import FitFlowMascot from '@/components/FitFlowMascot';
 
 const habitColors = [
   { name: 'Blue', value: 'bg-blue-500' },
@@ -251,9 +252,12 @@ export default function HabitsPage() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
           </div>
         ) : habits.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-            <p className="text-gray-500 mb-4">No habits yet.</p>
-            <p className="text-sm text-gray-400 mb-6">Create your first habit to start tracking!</p>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12 text-center">
+            <div className="flex justify-center mb-4">
+              <FitFlowMascot variant="encourage" size="md" className="animate-float" />
+            </div>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">No habits yet.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">Create your first habit to start tracking!</p>
             <button
               onClick={() => setShowAddForm(true)}
               className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"

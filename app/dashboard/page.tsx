@@ -9,6 +9,7 @@ import { LogOut, Calendar, Target, Dumbbell, Flame, TrendingUp, Scale, Droplet, 
 import { getCalorieEntries, getHabits, calculateWorkoutStreak, getWeightEntries, getDailyWaterTotal, getGoals, getUserSettings } from '@/lib/db';
 import { CalorieEntry, Habit } from '@/lib/types';
 import BodyGoalModal from '@/components/BodyGoalModal';
+import FitFlowMascot from '@/components/FitFlowMascot';
 
 export default function Dashboard() {
   const { user, logout, loading } = useAuth();
@@ -114,7 +115,10 @@ export default function Dashboard() {
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            <div className="flex items-center gap-3">
+              <FitFlowMascot variant="encourage" size="sm" className="animate-float" />
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            </div>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -258,7 +262,10 @@ export default function Dashboard() {
             </div>
           ) : calories.length === 0 ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              <p>No calories logged for this date.</p>
+              <div className="flex justify-center mb-4">
+                <FitFlowMascot variant="encourage" size="md" className="animate-float" />
+              </div>
+              <p className="mb-2">No calories logged for this date.</p>
               <Link href="/calories" className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 mt-2 inline-block">
                 Add your first entry →
               </Link>

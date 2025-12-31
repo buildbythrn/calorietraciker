@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Search, Loader2, X } from 'lucide-react';
-import { searchFood, searchFoodUSDA, FoodItem } from '@/lib/foodApi';
+import { searchFoodAll, FoodItem } from '@/lib/foodApi';
 
 interface FoodSearchProps {
   onSelect: (food: FoodItem) => void;
@@ -48,14 +48,8 @@ export default function FoodSearch({ onSelect, value, onChange, placeholder = "S
 
     searchTimeoutRef.current = setTimeout(async () => {
       try {
-        // Try Edamam first, fallback to USDA
-        let results = await searchFood(value);
-        
-        // If Edamam returns no results or is not configured, try USDA
-        if (results.length === 0) {
-          results = await searchFoodUSDA(value);
-        }
-
+        // Search local database and APIs together
+        const results = await searchFoodAll(value);
         setSearchResults(results);
       } catch (error) {
         console.error('Error searching food:', error);
